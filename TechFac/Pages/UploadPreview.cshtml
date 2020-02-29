@@ -1,0 +1,10 @@
+﻿@page "/v/{path}"
+@model UploadPreviewModel
+@{
+    ViewData["Title"] = "File Preview";
+}
+
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>@Model.DataString</p>
+    </div>
