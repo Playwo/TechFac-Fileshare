@@ -63,7 +63,7 @@ namespace Fileshare.Controllers
         }
 
         //upload/data/find/{fileName}
-        [HttpGet("data/find/{uploadId}")]
+        [HttpGet("data/find/{fileName}")]
         public async Task<ActionResult> GetUploadDataAsync([FromRoute]string fileName)
         {
             var upload = await DbContext.Uploads.Where(x => x.Filename == fileName)
@@ -79,13 +79,14 @@ namespace Fileshare.Controllers
         //upload/send
         [HttpPost("send")]
         [Authorize(AuthenticationSchemes = "Bearer")]
+        [RequestSizeLimit(50 * 1024 * 1024)]
         public async Task<ActionResult<Upload>> SendUploadAsync(string fileName = null)
+        
         {
             var userId = Guid.Parse(User.FindFirstValue("UserId"));
             var upload = new Upload(userId, fileName, Request.ContentType);
 
             await DataService.StoreUploadDataAsync(upload, Request.Body);
-
             DbContext.Add(upload);
             await DbContext.SaveChangesAsync();
 

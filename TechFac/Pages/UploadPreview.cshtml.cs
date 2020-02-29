@@ -1,12 +1,15 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Fileshare.Extensions;
 using Fileshare.Models;
 using Fileshare.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Fileshare
 {
@@ -35,11 +38,31 @@ namespace Fileshare
                 return NotFound();
             }
 
-            Data = await DataService.LoadUploadDataAsync(Upload);
+            if (NeedsRedirect())
+            {
+                return Redirect(GetDownloadUrl());
+            }
 
-            return Upload == null 
-                ? NotFound() 
-                : (ActionResult) Page();
+            if (Upload.ContentType.DoesSupportPreview())
+            {
+                Data = await DataService.LoadUploadDataAsync(Upload);
+            }
+
+            return Page();
         }
+
+        private bool NeedsRedirect()
+        {
+            if(!Request.Headers.TryGetValue("User-Agent", out var agent))
+            {
+                return false;
+            }
+            string userAgent = agent;
+
+            return userAgent.StartsWith("curl");
+        }
+
+        public string GetDownloadUrl()
+            => $"/upload/data/get/{Upload.Id}";
     }
 }

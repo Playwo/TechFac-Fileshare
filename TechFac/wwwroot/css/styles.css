@@ -1,0 +1,27 @@
+.btn-circle {
+    width: 70px;
+    height: 70px;
+    padding: 10px 16px;
+    border-radius: 35px;
+    font-size: 24px;
+    line-height: 1.33;
+}
+
+.dlbtn {
+    background-color: #36d949;
+    color: white;
+    width: 90px;
+    height: 90px;
+    padding: 10px 16px;
+    border-radius: 45px;
+}
+
+    .dlbtn:hover {
+        background-color: #006600
+    }
+
+#dlbutton {
+    position: fixed;
+    bottom: 4px;
+    right: 10px;
+}

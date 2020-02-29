@@ -1,5 +1,10 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Primitives;
 
 namespace Fileshare.Extensions
 {
@@ -21,5 +26,36 @@ namespace Fileshare.Extensions
 
             return sb.ToString();
         }
+
+        public static bool ContainsAny(this string inputString, StringComparison comparisonType, params string[] values)
+            => values.Any(x => inputString.Contains(x, comparisonType));
+
+        public static bool IsImageContentType(this string contentType) 
+            => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase,
+                "image/gif",
+                "image/x-icon",
+                "image/jpeg",
+                "image/png",
+                "image/apng",
+                "image/bmp",
+                "image/tiff",
+                "image/svg+xml",
+                "image/webp");
+
+        public static bool IsTextContentType(this string contentType)
+            => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase,
+                "text/plain",
+                "application/json",
+                "text/xml");
+
+        public static bool IsHtmlContentType(this string contentType)
+            => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase,
+                "text/html");
+
+        public static bool DoesSupportPreview(this string contentType)
+            => IsImageContentType(contentType) ||
+               IsTextContentType(contentType) ||
+               IsHtmlContentType(contentType);
+
     }
 }
