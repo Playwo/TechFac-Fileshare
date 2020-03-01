@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Fileshare.Authentication;
 using Fileshare.Extensions;
 using Fileshare.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Fileshare
 {
@@ -56,11 +57,12 @@ namespace Fileshare
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions()
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseStaticFiles();
-
-            app.UseHsts();
 
             app.UseRouting();
 

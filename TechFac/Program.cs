@@ -12,7 +12,7 @@ namespace Fileshare
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://0.0.0.0:80","https://0.0.0.0:443");
+                    webBuilder.UseUrls("http://127.0.0.1:7777");
                 });
     }
 }
