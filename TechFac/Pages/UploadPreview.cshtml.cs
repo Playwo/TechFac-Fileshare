@@ -1,7 +1,6 @@
-﻿using System.IO;
+﻿using System;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Fileshare.Extensions;
 using Fileshare.Models;
@@ -9,7 +8,6 @@ using Fileshare.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Fileshare
 {
@@ -59,7 +57,7 @@ namespace Fileshare
             }
             string userAgent = agent;
 
-            return userAgent.StartsWith("curl");
+            return userAgent.StartsWith("curl", StringComparison.OrdinalIgnoreCase);
         }
 
         public string GetDownloadUrl()

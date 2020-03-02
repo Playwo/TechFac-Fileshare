@@ -1,5 +1,8 @@
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using YamlDotNet.Serialization;
 
 namespace Fileshare
 {
@@ -11,8 +14,37 @@ namespace Fileshare
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureKestrel(options =>
+                    {
+                        options.ListenLocalhost(7777);
+                    });
+
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://127.0.0.1:7777");
+                })
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    string path = $"{context.HostingEnvironment.EnvironmentName}.config.yaml";
+
+                    TryCreateConfig(path);
+
+                    config.Sources.Clear();
+                    config.AddYamlFile(path);
                 });
+
+        public static void TryCreateConfig(string path)
+        {
+            if (!File.Exists(path))
+            {
+                string defaultConfig = new Serializer().Serialize(new
+                {
+                    ConnectionString = "AddPostgresConnectionString",
+                    FileStoragePath = "TempFolder",
+                    ApiKey = "YourAPIKey",
+                    BaseUrl = "www.Example.com"
+                });
+
+                File.WriteAllText(path, defaultConfig); ;
+            }
+        }
     }
 }

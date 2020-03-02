@@ -33,7 +33,7 @@ namespace Fileshare
             services.AddDbContext<UploaderContext>(options =>
             {
                 //options.UseInMemoryDatabase("Local");
-                options.UseNpgsql(Configuration.GetConnectionString("Remote"));
+                options.UseNpgsql(Configuration.GetConnectionString());
                 options.EnableSensitiveDataLogging();
             },
             ServiceLifetime.Transient, ServiceLifetime.Transient);

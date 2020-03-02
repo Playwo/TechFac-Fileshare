@@ -36,6 +36,23 @@
     <button onclick="location.href = '@Model.GetDownloadUrl()';" class="dlbtn"><i class="fa fa-download"></i></button>
 </div>
 
+@section Head{
+
+    <meta property="og:site_name" content="Fileshare" />
+    <meta property="og:description" content="Nice file innit, eh?" />
+
+    @if (Model.Upload.ContentType.IsImageContentType())
+    {
+        <meta property="og:image" content="@Model.GetDownloadUrl()" />
+        <meta property="og:image:type" content="@Model.Upload.ContentType" />
+    }
+    else if (Model.Upload.ContentType.IsVideoContentType())
+    {
+        <meta property="og:video" content="@Model.GetDownloadUrl()" />
+        <meta property="og:video:type" content="@Model.Upload.ContentType" />
+    }
+}
+
 @section Scripts{
     <script src="~/js/jquery.min.js"></script>
     <script src="~/bootstrap/js/bootstrap.min.js"></script>

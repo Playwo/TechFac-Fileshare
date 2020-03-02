@@ -1,0 +1,6 @@
+#This file an an Example! It will not be used in the application! 
+#Run the application once to create the actualy config file!
+ConnectionString: AddPostgresConnectionString
+FileStoragePath: TempFolder
+ApiKey: YourAPIKey
+BaseUrl: www.Example.com

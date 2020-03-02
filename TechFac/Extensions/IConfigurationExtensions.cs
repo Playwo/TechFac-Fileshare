@@ -9,5 +9,8 @@ namespace Fileshare.Extensions
 
         public static string GetStorageDir(this IConfiguration configuration)
             => configuration.GetValue<string>("StorageDir");
+
+        public static string GetConnectionString(this IConfiguration configuration)
+            => configuration.GetValue<string>("ConnectionString");
     }
 }

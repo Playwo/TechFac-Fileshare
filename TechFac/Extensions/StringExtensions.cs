@@ -42,6 +42,10 @@ namespace Fileshare.Extensions
                 "image/svg+xml",
                 "image/webp");
 
+        public static bool IsVideoContentType(this string contentType)
+            => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase,
+                "video/mp4");
+
         public static bool IsTextContentType(this string contentType)
             => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase,
                 "text/plain",
