@@ -34,7 +34,7 @@ namespace Fileshare
             {
                 //options.UseInMemoryDatabase("Local");
                 options.UseNpgsql(Configuration.GetConnectionString());
-                options.EnableSensitiveDataLogging();
+                //options.EnableSensitiveDataLogging();
             },
             ServiceLifetime.Transient, ServiceLifetime.Transient);
 
