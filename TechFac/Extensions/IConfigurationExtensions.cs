@@ -8,7 +8,7 @@ namespace Fileshare.Extensions
             => configuration.GetValue<string>("ApiKey");
 
         public static string GetStorageDir(this IConfiguration configuration)
-            => configuration.GetValue<string>("StorageDir");
+            => configuration.GetValue<string>("FileStoragePath");
 
         public static string GetConnectionString(this IConfiguration configuration)
             => configuration.GetValue<string>("ConnectionString");
