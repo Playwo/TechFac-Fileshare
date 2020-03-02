@@ -5,12 +5,12 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Fileshare.Extensions;
+using Fileshare.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Fileshare.Extensions;
-using Fileshare.Models;
 
 namespace Fileshare.Authentication
 {

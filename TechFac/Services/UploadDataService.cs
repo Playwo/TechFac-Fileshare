@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Fileshare.Extensions;
 using Fileshare.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace Fileshare.Services
 {
@@ -32,7 +32,7 @@ namespace Fileshare.Services
         public async Task<byte[]> LoadUploadDataAsync(Upload upload)
         {
             string path = MakePath(upload.Id);
-            return await File.ReadAllBytesAsync(path);      
+            return await File.ReadAllBytesAsync(path);
         }
 
         public string MakePath(Guid uploadId)

@@ -51,7 +51,7 @@ namespace Fileshare
 
         private bool NeedsRedirect()
         {
-            if(!Request.Headers.TryGetValue("User-Agent", out var agent))
+            if (!Request.Headers.TryGetValue("User-Agent", out var agent))
             {
                 return false;
             }

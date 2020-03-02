@@ -2,9 +2,7 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.Primitives;
 
 namespace Fileshare.Extensions
 {
@@ -30,7 +28,7 @@ namespace Fileshare.Extensions
         public static bool ContainsAny(this string inputString, StringComparison comparisonType, params string[] values)
             => values.Any(x => inputString.Contains(x, comparisonType));
 
-        public static bool IsImageContentType(this string contentType) 
+        public static bool IsImageContentType(this string contentType)
             => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase,
                 "image/gif",
                 "image/x-icon",

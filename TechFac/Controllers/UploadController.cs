@@ -2,12 +2,11 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore;
 using Fileshare.Models;
 using Fileshare.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fileshare.Controllers
 {
@@ -32,7 +31,7 @@ namespace Fileshare.Controllers
                                                 .FirstOrDefaultAsync();
 
             return upload == null
-                ? (ActionResult<Upload>)  NotFound("Invalid uploadId")
+                ? (ActionResult<Upload>) NotFound("Invalid uploadId")
                 : Ok(upload);
         }
 
@@ -57,7 +56,7 @@ namespace Fileshare.Controllers
 
             return upload == null
                 ? (ActionResult) NotFound("Invalid uploadId")
-                : upload.Filename == null 
+                : upload.Filename == null
                     ? PhysicalFile(DataService.MakePath(upload.Id), upload.ContentType, true)
                     : PhysicalFile(DataService.MakePath(upload.Id), upload.ContentType, upload.Filename, true);
         }
@@ -81,7 +80,7 @@ namespace Fileshare.Controllers
         [Authorize(AuthenticationSchemes = "Bearer")]
         [RequestSizeLimit(50 * 1024 * 1024)]
         public async Task<ActionResult<Upload>> SendUploadAsync(string fileName = null)
-        
+
         {
             var userId = Guid.Parse(User.FindFirstValue("UserId"));
             var upload = new Upload(userId, fileName, Request.ContentType);
