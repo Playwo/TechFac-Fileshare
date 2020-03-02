@@ -8,6 +8,7 @@ using Fileshare.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Fileshare
 {
@@ -15,12 +16,13 @@ namespace Fileshare
     {
         private readonly UploaderContext DbContext;
         private readonly UploadDataService DataService;
+        private readonly IConfiguration Configuration;
 
         public Upload Upload { get; private set; }
         public byte[] Data { get; private set; }
         public string DataString => Encoding.ASCII.GetString(Data);
 
-        public UploadPreviewModel(UploaderContext dbContext, UploadDataService dataService)
+        public UploadPreviewModel(IConfiguration configuration, UploaderContext dbContext, UploadDataService dataService)
         {
             DbContext = dbContext;
             DataService = dataService;
@@ -61,6 +63,6 @@ namespace Fileshare
         }
 
         public string GetDownloadUrl()
-            => $"/upload/data/get/{Upload.Id}";
+            => $"{Configuration.GetBaseUrl()}/upload/data/get/{Upload.Id}";
     }
 }
