@@ -56,9 +56,7 @@ namespace Fileshare.Controllers
 
             return upload == null
                 ? (ActionResult) NotFound("Invalid uploadId")
-                : upload.Filename == null
-                    ? PhysicalFile(DataService.MakePath(upload.Id), upload.ContentType, true)
-                    : PhysicalFile(DataService.MakePath(upload.Id), upload.ContentType, upload.Filename, true);
+                : PhysicalFile(DataService.MakePath(upload.Id), upload.ContentType, upload.Filename, true);
         }
 
         //upload/data/find/{fileName}
@@ -70,9 +68,7 @@ namespace Fileshare.Controllers
 
             return upload == null
                 ? (ActionResult) NotFound("Invalid uploadId")
-                : upload.Filename == null
-                    ? PhysicalFile(DataService.MakePath(upload.Id), upload.ContentType, true)
-                    : PhysicalFile(DataService.MakePath(upload.Id), upload.ContentType, upload.Filename, true);
+                : PhysicalFile(DataService.MakePath(upload.Id), upload.ContentType, upload.Filename, true);
         }
 
         //upload/send
