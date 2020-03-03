@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Fileshare.Models;
 using Fileshare.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 
 namespace Fileshare.Controllers
 {
@@ -48,27 +51,52 @@ namespace Fileshare.Controllers
         }
 
         //upload/data/get/{Id}
-        [HttpGet("data/get/{uploadId}")]
-        public async Task<ActionResult> GetUploadDataAsync([FromRoute]Guid uploadId)
+        [HttpGet("data/get/{uploadId}/{dl?}")]
+        public async Task<ActionResult> GetUploadDataAsync([FromRoute]Guid uploadId, int dl = 0)
         {
             var upload = await DbContext.Uploads.Where(x => x.Id == uploadId)
                                                 .FirstOrDefaultAsync();
 
-            return upload == null
-                ? (ActionResult) NotFound("Invalid uploadId")
-                : PhysicalFile(DataService.GetFilePath(upload), upload.ContentType, upload.Filename, true);
+            if (upload == null)
+            {
+                return NotFound("Invalid uploadId");
+            }
+
+            if (dl == 1)
+            {
+                AddContentDispositionHeader(upload.Filename, "attachment");
+            }
+            else
+            {
+                AddContentDispositionHeader(upload.Filename, "inline");
+            }
+
+            return PhysicalFile(DataService.GetFilePath(upload), upload.ContentType, upload.Filename, true);
         }
 
         //upload/data/find/{fileName}
         [HttpGet("data/find/{fileName}")]
-        public async Task<ActionResult> GetUploadDataAsync([FromRoute]string fileName)
+        [AllowAnonymous]
+        public async Task<ActionResult> GetUploadDataAsync([FromRoute]string fileName, int dl = 0)
         {
             var upload = await DbContext.Uploads.Where(x => x.Filename == fileName)
                                                 .FirstOrDefaultAsync();
 
-            return upload == null
-                ? (ActionResult) NotFound("Invalid uploadId")
-                : PhysicalFile(DataService.GetFilePath(upload), upload.ContentType, upload.Filename, true);
+            if (upload == null)
+            {
+                return NotFound("Invalid fileName");
+            }
+
+            if (dl == 1)
+            {
+                AddContentDispositionHeader(upload.Filename, "attachment");
+            }
+            else
+            {
+                AddContentDispositionHeader(upload.Filename, "inline");
+            }
+
+            return PhysicalFile(DataService.GetFilePath(upload), upload.ContentType, upload.Filename, true);
         }
 
         //upload/send
@@ -87,6 +115,15 @@ namespace Fileshare.Controllers
             await DbContext.SaveChangesAsync();
 
             return upload;
+        }
+
+        private void AddContentDispositionHeader(string fileName, string dispositionType)
+        {
+            var cd = new ContentDispositionHeaderValue(dispositionType)
+            {
+                FileNameStar = fileName
+            };
+            Response.Headers.Add(HeaderNames.ContentDisposition, cd.ToString());
         }
     }
 }

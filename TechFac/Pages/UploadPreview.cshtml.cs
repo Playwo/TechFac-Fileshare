@@ -63,9 +63,18 @@ namespace Fileshare
             return userAgent.StartsWith("curl", StringComparison.OrdinalIgnoreCase);
         }
 
-        public string GetAbsoluteDownloadUrl()
-            => $"https://{Configuration.GetBaseUrl()}{GetRelativeDownloadUrl()}";
-        public string GetRelativeDownloadUrl()
-            => $"/upload/data/get/{Upload.Id}";
+        public string GetAbsoluteDownloadUrl(bool directDownload = false)
+            => $"https://{Configuration.GetBaseUrl()}{GetRelativeDownloadUrl(directDownload)}";
+        public string GetRelativeDownloadUrl(bool directDownload = false)
+        {
+            string url = $"/upload/data/get/{Upload.Id}";
+
+            if (directDownload)
+            {
+                url += "/1";
+            }
+
+            return url;
+        }
     }
 }

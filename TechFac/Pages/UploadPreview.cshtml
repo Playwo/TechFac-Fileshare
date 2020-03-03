@@ -15,7 +15,7 @@
     <center>
         @if (Model.Upload.ContentType.IsImageContentType())
         {
-            <img src="@String.Format("data:{0};base64,{1}",Model.Upload.ContentType,Convert.ToBase64String(Model.Data) )" />
+            <img src="@Model.GetRelativeDownloadUrl(directDownload: true)" />
         }
         else if (Model.Upload.ContentType.IsTextContentType())
         {
@@ -33,7 +33,7 @@
 </main>
 
 <div id="dlbutton">
-    <button onclick="location.href = '@Model.GetRelativeDownloadUrl()';" class="dlbtn"><i class="fa fa-download"></i></button>
+    <button onclick="location.href = '@Model.GetRelativeDownloadUrl(directDownload: true)';" class="dlbtn"><i class="fa fa-download"></i></button>
 </div>
 
 @section Head{
