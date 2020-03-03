@@ -11,10 +11,15 @@ namespace Fileshare.Services
     public class UploadDataService : Service
     {
         private readonly IConfiguration Configuration;
+        private readonly Object IdGeneratorLock;
+        private DateTimeOffset LastIdTime;
 
         public UploadDataService(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            IdGeneratorLock = new object();
+            LastIdTime = DateTimeOffset.UtcNow;
         }
 
         public override ValueTask RunAsync()
@@ -49,12 +54,24 @@ namespace Fileshare.Services
         {
             string extension = MimeTypeMap.GetExtension(contentType, false);
 
-            if( string.IsNullOrWhiteSpace(extension))
+            if (string.IsNullOrWhiteSpace(extension))
             {
                 extension = ".other";
             }
 
-            return $"{Guid.NewGuid()}{extension}";         
+            lock (IdGeneratorLock)
+            {
+                var time = DateTimeOffset.UtcNow;
+
+                if ((time - LastIdTime).TotalMilliseconds < 2)
+                {
+                    time.AddMilliseconds(2);
+                }
+
+                LastIdTime = time;
+
+                return $"{time.Year}{time.Month}{time.Day}{time.Hour}{time.Minute}{time.Second}{time.Millisecond}{extension}";
+            }      
         }
     }
 }
