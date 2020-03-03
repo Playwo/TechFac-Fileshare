@@ -72,7 +72,7 @@ namespace Fileshare.Controllers
                 AddContentDispositionHeader(upload.Filename, "inline");
             }
 
-            return PhysicalFile(DataService.GetFilePath(upload), upload.ContentType, upload.Filename, true);
+            return PhysicalFile(DataService.GetFilePath(upload), upload.ContentType);
         }
 
         //upload/data/find/{fileName}
@@ -97,7 +97,7 @@ namespace Fileshare.Controllers
                 AddContentDispositionHeader(upload.Filename, "inline");
             }
 
-            return PhysicalFile(DataService.GetFilePath(upload), upload.ContentType, upload.Filename, true);
+            return PhysicalFile(DataService.GetFilePath(upload), upload.ContentType);
         }
 
         //upload/send
