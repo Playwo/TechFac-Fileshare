@@ -15,7 +15,7 @@
     <center>
         @if (Model.Upload.ContentType.IsImageContentType())
         {
-            <img src="@Model.GetRelativeDownloadUrl(directDownload: true)" />
+            <img src="@Model.GetRelativeDownloadUrl()" />
         }
         else if (Model.Upload.ContentType.IsTextContentType())
         {
