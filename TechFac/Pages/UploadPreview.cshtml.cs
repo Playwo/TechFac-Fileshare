@@ -26,6 +26,7 @@ namespace Fileshare
         {
             DbContext = dbContext;
             DataService = dataService;
+            Configuration = configuration;
         }
 
         public async Task<ActionResult> OnGetAsync(string path)
