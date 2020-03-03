@@ -41,7 +41,7 @@ namespace Fileshare
 
             if (NeedsRedirect())
             {
-                return Redirect(GetDownloadUrl());
+                return Redirect(GetAbsoluteDownloadUrl());
             }
 
             if (Upload.ContentType.DoesSupportPreview())
@@ -63,7 +63,9 @@ namespace Fileshare
             return userAgent.StartsWith("curl", StringComparison.OrdinalIgnoreCase);
         }
 
-        public string GetDownloadUrl()
-            => $"{Configuration.GetBaseUrl()}/upload/data/get/{Upload.Id}";
+        public string GetAbsoluteDownloadUrl()
+            => $"{Configuration.GetBaseUrl()}{GetRelativeDownloadUrl()}";
+        public string GetRelativeDownloadUrl()
+            => $"/upload/data/get/{Upload.Id}";
     }
 }
