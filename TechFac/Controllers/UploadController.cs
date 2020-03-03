@@ -56,7 +56,7 @@ namespace Fileshare.Controllers
 
             return upload == null
                 ? (ActionResult) NotFound("Invalid uploadId")
-                : PhysicalFile(DataService.MakePath(upload.Id), upload.ContentType, upload.Filename, true);
+                : PhysicalFile(DataService.GetFilePath(upload), upload.ContentType, upload.Filename, true);
         }
 
         //upload/data/find/{fileName}
@@ -68,7 +68,7 @@ namespace Fileshare.Controllers
 
             return upload == null
                 ? (ActionResult) NotFound("Invalid uploadId")
-                : PhysicalFile(DataService.MakePath(upload.Id), upload.ContentType, upload.Filename, true);
+                : PhysicalFile(DataService.GetFilePath(upload), upload.ContentType, upload.Filename, true);
         }
 
         //upload/send
@@ -76,9 +76,10 @@ namespace Fileshare.Controllers
         [Authorize(AuthenticationSchemes = "Bearer")]
         [RequestSizeLimit(50 * 1024 * 1024)]
         public async Task<ActionResult<Upload>> SendUploadAsync(string fileName = null)
-
         {
             var userId = Guid.Parse(User.FindFirstValue("UserId"));
+
+            fileName ??= DataService.GetNextFileName(Request.ContentType);
             var upload = new Upload(userId, fileName, Request.ContentType);
 
             await DataService.StoreUploadDataAsync(upload, Request.Body);

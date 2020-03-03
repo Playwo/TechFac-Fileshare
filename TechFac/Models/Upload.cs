@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.Json.Serialization;
-using MimeTypes;
 
 namespace Fileshare.Models
 {
@@ -20,7 +19,7 @@ namespace Fileshare.Models
         {
             Id = Guid.NewGuid();
             UserId = userId;
-            Filename = filename ?? $"{Id}{MimeTypeMap.GetExtension(contentType, false)}";
+            Filename = filename;
             ContentType = contentType;
             CreatedAt = DateTimeOffset.UtcNow;
         }
