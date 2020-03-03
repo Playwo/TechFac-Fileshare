@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 
 namespace Fileshare.Controllers
@@ -52,7 +53,7 @@ namespace Fileshare.Controllers
 
         //upload/data/get/{Id}
         [HttpGet("data/get/{uploadId}/{dl?}")]
-        public async Task<ActionResult> GetUploadDataAsync([FromRoute]Guid uploadId, int dl = 0)
+        public async Task<ActionResult> GetUploadDataAsync([FromRoute]Guid uploadId, [FromRoute] int dl = 0)
         {
             var upload = await DbContext.Uploads.Where(x => x.Id == uploadId)
                                                 .FirstOrDefaultAsync();
@@ -75,9 +76,9 @@ namespace Fileshare.Controllers
         }
 
         //upload/data/find/{fileName}
-        [HttpGet("data/find/{fileName}")]
+        [HttpGet("data/find/{fileName}/{dl?}")]
         [AllowAnonymous]
-        public async Task<ActionResult> GetUploadDataAsync([FromRoute]string fileName, int dl = 0)
+        public async Task<ActionResult> GetUploadDataAsync([FromRoute]string fileName, [FromRoute] int dl = 0)
         {
             var upload = await DbContext.Uploads.Where(x => x.Filename == fileName)
                                                 .FirstOrDefaultAsync();
