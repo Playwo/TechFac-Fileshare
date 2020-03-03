@@ -64,7 +64,7 @@ namespace Fileshare
         }
 
         public string GetAbsoluteDownloadUrl()
-            => $"{Configuration.GetBaseUrl()}{GetRelativeDownloadUrl()}";
+            => $"https://{Configuration.GetBaseUrl()}{GetRelativeDownloadUrl()}";
         public string GetRelativeDownloadUrl()
             => $"/upload/data/get/{Upload.Id}";
     }
