@@ -65,7 +65,7 @@ namespace Fileshare.Controllers
 
             if (dl == 1)
             {
-                AddContentDispositionHeader(upload.Filename, "attachment");
+                AddContentDispositionHeader(upload.Filename, "inline");
             }
             else
             {
@@ -90,7 +90,7 @@ namespace Fileshare.Controllers
 
             if (dl == 1)
             {
-                AddContentDispositionHeader(upload.Filename, "attachment");
+                AddContentDispositionHeader(upload.Filename, "inline");
             }
             else
             {
