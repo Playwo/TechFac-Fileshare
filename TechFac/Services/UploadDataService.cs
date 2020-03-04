@@ -65,7 +65,7 @@ namespace Fileshare.Services
 
                 if ((time - LastIdTime).TotalMilliseconds < 2)
                 {
-                    time.AddMilliseconds(2);
+                    time = LastIdTime.AddMilliseconds(2);
                 }
 
                 LastIdTime = time;
