@@ -63,16 +63,10 @@ namespace Fileshare.Controllers
                 return NotFound("Invalid uploadId");
             }
 
-            if (dl == 1)
-            {
-                AddContentDispositionHeader(upload.Filename, "inline");
-            }
-            else
-            {
-                AddContentDispositionHeader(upload.Filename, "inline");
-            }
+            AddContentDispositionHeader(upload, dl == 1);
 
-            return PhysicalFile(DataService.GetFilePath(upload), upload.ContentType);
+            byte[] uploadData = await DataService.LoadUploadDataAsync(upload);
+            return File(uploadData, upload.ContentType);
         }
 
         //upload/data/find/{fileName}
@@ -87,17 +81,11 @@ namespace Fileshare.Controllers
             {
                 return NotFound("Invalid fileName");
             }
+            
+            AddContentDispositionHeader(upload, dl == 1);
 
-            if (dl == 1)
-            {
-                AddContentDispositionHeader(upload.Filename, "inline");
-            }
-            else
-            {
-                AddContentDispositionHeader(upload.Filename, "inline");
-            }
-
-            return PhysicalFile(DataService.GetFilePath(upload), upload.ContentType);
+            byte[] uploadData = await DataService.LoadUploadDataAsync(upload);
+            return File(uploadData, upload.ContentType);
         }
 
         //upload/send
@@ -118,11 +106,16 @@ namespace Fileshare.Controllers
             return upload;
         }
 
-        private void AddContentDispositionHeader(string fileName, string dispositionType)
+        private void AddContentDispositionHeader(Upload upload, bool isDirectDownload)
         {
-            var cd = new ContentDispositionHeaderValue(dispositionType)
+            string type = isDirectDownload
+                ? "attachment"
+                : "inline";
+
+            var cd = new ContentDispositionHeaderValue(type)
             {
-                FileNameStar = fileName
+                FileName = upload.Filename,
+                CreationDate = upload.CreatedAt,
             };
             Response.Headers.Add(HeaderNames.ContentDisposition, cd.ToString());
         }
