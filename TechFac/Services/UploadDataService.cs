@@ -71,7 +71,7 @@ namespace Fileshare.Services
                 LastIdTime = time;
 
                 return $"{time.Year}{time.Month}{time.Day}{time.Hour}{time.Minute}{time.Second}{time.Millisecond}{extension}";
-            }      
+            }
         }
     }
 }

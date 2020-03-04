@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Fileshare.Models;
 using Fileshare.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 
 namespace Fileshare.Controllers
@@ -81,7 +78,7 @@ namespace Fileshare.Controllers
             {
                 return NotFound("Invalid fileName");
             }
-            
+
             AddContentDispositionHeader(upload, dl == 1);
 
             byte[] uploadData = await DataService.LoadUploadDataAsync(upload);
