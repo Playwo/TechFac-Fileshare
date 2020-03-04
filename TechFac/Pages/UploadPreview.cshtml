@@ -43,12 +43,12 @@
 
     @if (Model.Upload.ContentType.IsImageContentType())
     {
-        <meta property="og:image" content="@Model.GetAbsoluteDownloadUrl()" />
+        <meta property="og:image" content="@Model.GetRelativeDownloadUrl()" />
         <meta property="og:image:type" content="@Model.Upload.ContentType" />
     }
     else if (Model.Upload.ContentType.IsVideoContentType())
     {
-        <meta property="og:video" content="@Model.GetAbsoluteDownloadUrl()" />
+        <meta property="og:video" content="@Model.GetRelativeDownloadUrl()" />
         <meta property="og:video:type" content="@Model.Upload.ContentType" />
     }
 }
