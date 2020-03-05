@@ -28,7 +28,7 @@ namespace Fileshare.Controllers
 
         //user/create
         [HttpPost("create")]
-        [Authorize(AuthenticationSchemes = "Key")]
+        [Authorize(AuthenticationSchemes = "ApiKey")]
         public async Task<ActionResult<User>> CreateUserAsync([FromForm]string username, [FromForm]string password)
         {
             bool nameUsed = await DbContext.Users.AnyAsync(x => x.Username == username);

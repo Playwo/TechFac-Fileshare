@@ -42,7 +42,7 @@ namespace Fileshare
             services.AddControllers();
             services.AddRazorPages();
             services.AddAuthentication()
-                .AddScheme<KeyAuthOptions, KeyAuthHandler>("Key", x => x.ApiKey = Configuration.GetApiKey())
+                .AddScheme<KeyAuthOptions, KeyAuthHandler>("ApiKey", x => x.ApiKey = Configuration.GetApiKey())
                 .AddScheme<BasicAuthOptions, BasicAuthHandler>("Basic", null)
                 .AddScheme<BearerAuthOptions, BearerAuthHandler>("Bearer", null);
         }
