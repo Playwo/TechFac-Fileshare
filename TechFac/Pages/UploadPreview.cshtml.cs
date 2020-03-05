@@ -63,8 +63,6 @@ namespace Fileshare
             return userAgent.StartsWithAny(StringComparison.OrdinalIgnoreCase, "curl", "wget");
         }
 
-        public string GetAbsoluteDownloadUrl(bool directDownload = false)
-            => $"https://{Configuration.GetBaseUrl()}{GetRelativeDownloadUrl(directDownload)}";
         public string GetRelativeDownloadUrl(bool directDownload = false)
         {
             string url = $"/upload/data/get/{Upload.Id}";
