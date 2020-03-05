@@ -41,7 +41,7 @@ namespace Fileshare
 
             if (NeedsRedirect())
             {
-                return Redirect(GetAbsoluteDownloadUrl());
+                return Redirect(GetRelativeDownloadUrl(directDownload: true));
             }
 
             if (Upload.ContentType.DoesSupportPreview())
@@ -60,7 +60,7 @@ namespace Fileshare
             }
             string userAgent = agent;
 
-            return userAgent.StartsWith("curl", StringComparison.OrdinalIgnoreCase);
+            return userAgent.StartsWithAny(StringComparison.OrdinalIgnoreCase, "curl", "wget");
         }
 
         public string GetAbsoluteDownloadUrl(bool directDownload = false)

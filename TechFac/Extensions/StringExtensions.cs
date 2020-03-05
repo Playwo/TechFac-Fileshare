@@ -28,6 +28,9 @@ namespace Fileshare.Extensions
         public static bool ContainsAny(this string inputString, StringComparison comparisonType, params string[] values)
             => values.Any(x => inputString.Contains(x, comparisonType));
 
+        public static bool StartsWithAny(this string inputString, StringComparison comparisonType, params string[] values)
+            => values.Any(x => inputString.StartsWith(x, comparisonType));
+
         public static bool IsImageContentType(this string contentType)
             => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase,
                 "image/gif",
