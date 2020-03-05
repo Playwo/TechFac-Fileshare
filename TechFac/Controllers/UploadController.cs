@@ -68,7 +68,6 @@ namespace Fileshare.Controllers
 
         //upload/data/find/{fileName}
         [HttpGet("data/find/{fileName}/{dl?}")]
-        [AllowAnonymous]
         public async Task<ActionResult> GetUploadDataAsync([FromRoute]string fileName, [FromRoute] int dl = 0)
         {
             var upload = await DbContext.Uploads.Where(x => x.Filename == fileName)
