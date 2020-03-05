@@ -36,7 +36,7 @@ namespace Fileshare
                 options.UseNpgsql(Configuration.GetConnectionString());
                 //options.EnableSensitiveDataLogging();
             },
-            ServiceLifetime.Transient, ServiceLifetime.Transient);
+            ServiceLifetime.Scoped, ServiceLifetime.Scoped);
 
             //ASP
             services.AddControllers();
