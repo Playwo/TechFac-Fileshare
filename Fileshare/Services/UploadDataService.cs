@@ -40,6 +40,14 @@ namespace Fileshare.Services
             string path = GetFilePath(upload);
             return await File.ReadAllBytesAsync(path);
         }
+        public void DeleteUploadData(Upload upload)
+        {
+            string path = GetFilePath(upload);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
 
         public string GetFilePath(Upload upload)
             => Path.Combine(GetBasePath(), upload.Filename);
