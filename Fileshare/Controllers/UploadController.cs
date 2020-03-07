@@ -106,7 +106,7 @@ namespace Fileshare.Controllers
         [HttpPost("send")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [RequestSizeLimit(50 * 1024 * 1024)]
-        public async Task<ActionResult<Upload>> ReceiveUploadAsync(string fileName = null)
+        public async Task<ActionResult<Upload>> ReceiveUploadAsync([FromHeader]string fileName = null)
         {
             var userId = Guid.Parse(User.FindFirstValue("UserId"));
 
