@@ -4,57 +4,64 @@
 }
 
 .main {
-    margin-top: 50px; /* Add a top margin to avoid content overlay */
+    position: fixed;
     width: 100%;
+    top: 70px;
     height: 100%;
+    background-color: lightgreen;
 }
 
-.navbaa {
-    overflow: hidden;
-    background-color: rgb(76, 201, 223);
+.navbar {
     position: fixed;
     top: 0;
     width: 100%;
+    height: 70px;
+    overflow: no-display;
+    background-image: linear-gradient(red, yellow);
+    align-content: center;
 }
 
-.navbar a {
-    float: left;
-    display: block;
-    color: #000000;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-    .navbar a:hover {
-        background: rgb(77, 157, 182);
-        color: black;
+    .navbar strong {
+        float: left;
+        color: #000000;
+        text-decoration: none;
+        background-color:transparent;
+        font-size: 3vw;
+        margin-left: 8vw;
+        font-family: Bahnschrift
     }
 
-#dlbutton {
+    .navbar img {
+        /*filter: blur(0px) brightness(141%) contrast(116%) grayscale(0%) hue-rotate(0deg) invert(0%) saturate(123%) sepia(0%);*/
+        width: 70px;
+        background-color: transparent;
+    }
+
+.dlarea {
     position: fixed;
-    bottom: 4px;
-    right: 10px;
+    bottom: 20px;
+    right: 20px;
+    background-color: transparent;
 }
 
-.btn-circle {
-    width: 70px;
-    height: 70px;
-    padding: 10px 16px;
-    border-radius: 35px;
-    font-size: 24px;
-    line-height: 1.33;
-}
-
-.dlbtn {
-    background-color: #36d949;
-    color: white;
+.dlbutton {
     width: 90px;
     height: 90px;
-    padding: 10px 16px;
     border-radius: 45px;
+    border-color: rgb(201, 81, 1);
+    border-width: 5px;
+    color: black;
+    padding: 10px 16px;
+    outline: none;
+    background-color: greenyellow;
 }
 
-    .dlbtn:hover {
-        background-color: #006600
+    .dlbutton:hover {
+        background-color: yellow;
+    }
+
+    .dlbutton img{
+        width: 50px;
+        height: 50px;
+        background-color: transparent;
     }
