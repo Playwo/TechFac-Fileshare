@@ -3,4 +3,3 @@
 ConnectionString: AddPostgresConnectionString
 FileStoragePath: TempFolder
 ApiKey: YourAPIKey
-BaseUrl: www.Example.com
