@@ -7,6 +7,7 @@ using Fileshare.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Net.Http.Headers;
 
 namespace Fileshare.Controllers
@@ -24,6 +25,7 @@ namespace Fileshare.Controllers
             DataService = dataService;
         }
 
+        #region GetUpload
         //upload/info/get/{Id}
         [HttpGet("info/get/{uploadId}")]
         public async Task<ActionResult<Upload>> GetUploadAsync([FromRoute]Guid uploadId)
@@ -47,7 +49,8 @@ namespace Fileshare.Controllers
                 ? (ActionResult<Upload>) NotFound("Invalid uploadId")
                 : Ok(upload);
         }
-
+        #endregion
+        #region GetData
         //upload/data/get/{Id}
         [HttpGet("data/get/{uploadId}/{dl?}")]
         public async Task<ActionResult> GetUploadDataAsync([FromRoute]Guid uploadId, [FromRoute] int dl = 0)
@@ -84,6 +87,21 @@ namespace Fileshare.Controllers
             return File(uploadData, upload.ContentType);
         }
 
+        private void AddContentDispositionHeader(Upload upload, bool isDirectDownload)
+        {
+            string type = isDirectDownload
+                ? "attachment"
+                : "inline";
+
+            var cd = new ContentDispositionHeaderValue(type)
+            {
+                FileName = upload.Filename,
+                CreationDate = upload.CreatedAt,
+            };
+            Response.Headers.Add(HeaderNames.ContentDisposition, cd.ToString());
+        }
+        #endregion
+        #region ReceiveUpload
         //upload/send
         [HttpPost("send")]
         [Authorize(AuthenticationSchemes = "Bearer")]
@@ -101,19 +119,48 @@ namespace Fileshare.Controllers
 
             return upload;
         }
-
-        private void AddContentDispositionHeader(Upload upload, bool isDirectDownload)
+        #endregion
+        #region DeleteUpload
+        [HttpDelete("deleteId")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult> DeleteUploadByIdAsync([FromForm]Guid uploadId)
         {
-            string type = isDirectDownload
-                ? "attachment"
-                : "inline";
+            var upload = await DbContext.Uploads.Where(x => x.Id == uploadId)
+                                                .FirstOrDefaultAsync();
 
-            var cd = new ContentDispositionHeaderValue(type)
+            if (upload == null)
             {
-                FileName = upload.Filename,
-                CreationDate = upload.CreatedAt,
-            };
-            Response.Headers.Add(HeaderNames.ContentDisposition, cd.ToString());
+                return NotFound("Invalid uploadId");
+            }
+
+            DataService.DeleteUploadData(upload);
+
+            DbContext.Uploads.Remove(upload);
+            await DbContext.SaveChangesAsync();
+
+            return Ok();
         }
+
+        [HttpDelete("deleteName")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult> DeleteUploadByIdAsync([FromForm]string fileName)
+        {
+            var upload = await DbContext.Uploads.Where(x => x.Filename == fileName)
+                                    .FirstOrDefaultAsync();
+
+            if (upload == null)
+            {
+                return NotFound("Invalid fileName");
+            }
+
+            DataService.DeleteUploadData(upload);
+
+            DbContext.Uploads.Remove(upload);
+            await DbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        #endregion
     }
 }
