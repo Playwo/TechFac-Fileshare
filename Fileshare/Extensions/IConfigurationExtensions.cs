@@ -12,8 +12,5 @@ namespace Fileshare.Extensions
 
         public static string GetConnectionString(this IConfiguration configuration)
             => configuration.GetValue<string>("ConnectionString");
-
-        public static string GetBaseUrl(this IConfiguration configuration)
-            => configuration.GetValue<string>("BaseUrl");
     }
 }
