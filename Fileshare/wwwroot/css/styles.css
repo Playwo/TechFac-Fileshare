@@ -1,0 +1,60 @@
+* {
+    padding-left: 0px;
+    margin-left: 0px;
+}
+
+.main {
+    margin-top: 50px; /* Add a top margin to avoid content overlay */
+    width: 100%;
+    height: 100%;
+}
+
+.navbaa {
+    overflow: hidden;
+    background-color: rgb(76, 201, 223);
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+.navbar a {
+    float: left;
+    display: block;
+    color: #000000;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+    .navbar a:hover {
+        background: rgb(77, 157, 182);
+        color: black;
+    }
+
+#dlbutton {
+    position: fixed;
+    bottom: 4px;
+    right: 10px;
+}
+
+.btn-circle {
+    width: 70px;
+    height: 70px;
+    padding: 10px 16px;
+    border-radius: 35px;
+    font-size: 24px;
+    line-height: 1.33;
+}
+
+.dlbtn {
+    background-color: #36d949;
+    color: white;
+    width: 90px;
+    height: 90px;
+    padding: 10px 16px;
+    border-radius: 45px;
+}
+
+    .dlbtn:hover {
+        background-color: #006600
+    }

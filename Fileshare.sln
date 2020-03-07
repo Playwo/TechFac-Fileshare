@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29521.150
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "TechFac\Server.csproj", "{CA52878C-7DB6-4010-90DD-2F88F8866178}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Fileshare\Fileshare.csproj", "{CA52878C-7DB6-4010-90DD-2F88F8866178}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
