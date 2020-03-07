@@ -31,6 +31,12 @@
     </center>
 </main>
 
+<div class="viewarea">
+    <button onclick="location.href = '@Model.GetRelativeDownloadUrl(directDownload: false)';" class="viewbutton">
+        <img src="~/img/eye.png">
+    </button>
+</div>
+
 <div class="dlarea">
     <button onclick="location.href = '@Model.GetRelativeDownloadUrl(directDownload: true)';" class="dlbutton">
         <img src="~/img/Download.png">
