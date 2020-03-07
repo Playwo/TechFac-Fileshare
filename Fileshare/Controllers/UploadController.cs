@@ -7,7 +7,6 @@ using Fileshare.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Net.Http.Headers;
 
 namespace Fileshare.Controllers
@@ -120,7 +119,7 @@ namespace Fileshare.Controllers
                 fileName = DataService.GetNextFileName(Request.ContentType);
             }
 
-            var userId = Guid.Parse(User.FindFirstValue("UserId"));           
+            var userId = Guid.Parse(User.FindFirstValue("UserId"));
             var upload = new Upload(userId, fileName, Request.ContentType);
 
             await DataService.StoreUploadDataAsync(upload, Request.Body);
