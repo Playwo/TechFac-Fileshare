@@ -106,11 +106,21 @@ namespace Fileshare.Controllers
         [HttpPost("send")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [RequestSizeLimit(50 * 1024 * 1024)]
-        public async Task<ActionResult<Upload>> ReceiveUploadAsync([FromHeader]string fileName = null)
+        public async Task<ActionResult<Upload>> ReceiveUploadAsync([FromHeader]string fileName = null, [FromHeader]bool generateName = false)
         {
-            var userId = Guid.Parse(User.FindFirstValue("UserId"));
+            if (fileName != null)
+            {
+                bool nameUsed = await DbContext.Uploads.AnyAsync(x => x.Filename == fileName);
 
-            fileName ??= DataService.GetNextFileName(Request.ContentType);
+                if (nameUsed && !generateName)
+                {
+                    return Conflict("The fileName is already being used!");
+                }
+
+                fileName = DataService.GetNextFileName(Request.ContentType);
+            }
+
+            var userId = Guid.Parse(User.FindFirstValue("UserId"));           
             var upload = new Upload(userId, fileName, Request.ContentType);
 
             await DataService.StoreUploadDataAsync(upload, Request.Body);
