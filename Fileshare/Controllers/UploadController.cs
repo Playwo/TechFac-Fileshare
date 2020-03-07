@@ -38,7 +38,7 @@ namespace Fileshare.Controllers
 
         //upload/info/find/{fileName}
         [HttpGet("info/find/{fileName}")]
-        public async Task<ActionResult<Upload>> GetUploadAsync([FromRoute]string fileName)
+        public async Task<ActionResult<Upload>> FindUploadAsync([FromRoute]string fileName)
         {
             var upload = await DbContext.Uploads.Where(x => x.Filename == fileName)
                                                 .FirstOrDefaultAsync();
@@ -68,7 +68,7 @@ namespace Fileshare.Controllers
 
         //upload/data/find/{fileName}
         [HttpGet("data/find/{fileName}/{dl?}")]
-        public async Task<ActionResult> GetUploadDataAsync([FromRoute]string fileName, [FromRoute] int dl = 0)
+        public async Task<ActionResult> FindUploadDataAsync([FromRoute]string fileName, [FromRoute] int dl = 0)
         {
             var upload = await DbContext.Uploads.Where(x => x.Filename == fileName)
                                                 .FirstOrDefaultAsync();
@@ -88,7 +88,7 @@ namespace Fileshare.Controllers
         [HttpPost("send")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [RequestSizeLimit(50 * 1024 * 1024)]
-        public async Task<ActionResult<Upload>> SendUploadAsync(string fileName = null)
+        public async Task<ActionResult<Upload>> ReceiveUploadAsync(string fileName = null)
         {
             var userId = Guid.Parse(User.FindFirstValue("UserId"));
 
