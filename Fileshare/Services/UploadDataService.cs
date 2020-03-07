@@ -50,7 +50,7 @@ namespace Fileshare.Services
         }
 
         public string GetFilePath(Upload upload)
-            => Path.Combine(GetBasePath(), upload.Filename);
+            => Path.Combine(GetBasePath(), $"{upload.Id}.data");
 
         public string GetBasePath()
             => Path.IsPathRooted(Configuration.GetStorageDir())
