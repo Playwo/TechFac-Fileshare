@@ -11,7 +11,7 @@ namespace Fileshare.Services
     public class UploadDataService : Service
     {
         private readonly IConfiguration Configuration;
-        private readonly Object IdGeneratorLock;
+        private readonly object IdGeneratorLock;
         private DateTimeOffset LastIdTime;
 
         public UploadDataService(IConfiguration configuration)

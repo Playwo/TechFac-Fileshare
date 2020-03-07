@@ -39,7 +39,9 @@ namespace Fileshare
                 {
                     ConnectionString = "AddPostgresConnectionString",
                     FileStoragePath = "TempFolder",
-                    ApiKey = "YourAPIKey"
+                    ApiKey = "YourAPIKey",
+                    EnableWebhook = "false",
+                    WebhookUrl = ""
                 });
 
                 File.WriteAllText(path, defaultConfig); ;

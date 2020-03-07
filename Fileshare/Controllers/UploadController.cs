@@ -17,11 +17,13 @@ namespace Fileshare.Controllers
     {
         private readonly UploaderContext DbContext;
         private readonly UploadDataService DataService;
+        private readonly WebhookService WebhookService;
 
-        public UploadController(UploaderContext dbContext, UploadDataService dataService)
+        public UploadController(UploaderContext dbContext, UploadDataService dataService, WebhookService webhookService)
         {
             DbContext = dbContext;
             DataService = dataService;
+            WebhookService = webhookService;
         }
 
         #region GetUpload
@@ -125,6 +127,8 @@ namespace Fileshare.Controllers
             await DataService.StoreUploadDataAsync(upload, Request.Body);
             DbContext.Add(upload);
             await DbContext.SaveChangesAsync();
+
+            WebhookService.QueueUpload(upload);
 
             return upload;
         }

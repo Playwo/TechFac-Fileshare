@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Fileshare.Authentication;
 using Fileshare.Extensions;
@@ -28,6 +29,7 @@ namespace Fileshare
             //SERVICES
             services.AddServices();
             services.AddSingleton<Random>();
+            services.AddSingleton<HttpClient>();
 
             //DB
             services.AddDbContext<UploaderContext>(options =>

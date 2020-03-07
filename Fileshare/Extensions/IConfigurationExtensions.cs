@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 
 namespace Fileshare.Extensions
 {
@@ -12,5 +13,18 @@ namespace Fileshare.Extensions
 
         public static string GetConnectionString(this IConfiguration configuration)
             => configuration.GetValue<string>("ConnectionString");
+
+        public static bool TryGetWebhookUrl(this IConfiguration configuration, out Uri webHookUrl)
+        {
+            if (configuration.GetValue<bool>("EnableWebhook"))
+            {
+                string url = configuration.GetValue<string>("WebhookUrl");
+
+                return Uri.TryCreate(url, UriKind.Absolute, out webHookUrl);
+            }
+
+            webHookUrl = null;
+            return false;
+        }
     }
 }
