@@ -18,11 +18,11 @@
     min-width: 10vw;
     max-height: 90vh;
     min-height: 30vh;
-    border-color: black;
+    border-color: rgb(87, 85, 82);
     border-width: 0.5vw;
     border-radius: 25px;
     border-style: dashed;
-    background-color: wheat;
+    background-color: rgb(66, 45, 4);
     left: 50%;
     -webkit-transform: translateX(-50%);
     transform: translateX(-50%)
