@@ -18,16 +18,14 @@
     border-radius: 20px;
     border-style: dashed;
     background-color: wheat;
-    max-width: 90%;
-    min-width: 30%;
-
-    min-height: 10vh;
-
-    
+    max-width: 90vw;
+    min-width: 10vw;
+    max-height: 90vh;
+    min-height: 30vh;
 }
 
     .main * {
-        padding: 3% 3% 3% 3%;
+        padding: 2.5% 2.5% 2.5% 2.5%;
         max-width: 85vw;
         max-height: 85vh;
     }
@@ -35,26 +33,30 @@
 .navbar {
     position: fixed;
     top: 0;
-    width: 100%;
+    width: 100vw;
     height: 5vw;
-    overflow: no-display;
     background-image: linear-gradient(darkblue, black);
-    align-content: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    box-sizing:border-box;
 }
 
-    .navbar strong {
-        float: left;
-        color: wheat;
-        text-decoration: none;
-        font-size: 3vw;
-        margin-left: 8vw;
-        font-family: Bahnschrift
+    .navbar img {
+        width: 5.2vw;
+        background-color: transparent;
     }
 
-    .navbar img {
-        /*filter: blur(0px) brightness(141%) contrast(116%) grayscale(0%) hue-rotate(0deg) invert(0%) saturate(123%) sepia(0%);*/
-        width: 5vw;
-        background-color: transparent;
+    .navbar strong {
+        position: relative;
+        float: left;
+        color: white;
+        text-decoration: none;
+        font-size: 3vw;
+        margin-left: 7vw;
+        font-family: Bahnschrift;
     }
 
 .dlarea {
