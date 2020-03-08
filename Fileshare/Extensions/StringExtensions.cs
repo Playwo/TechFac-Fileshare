@@ -55,8 +55,7 @@ namespace Fileshare.Extensions
                 "text/html");
 
         public static bool DoesSupportPreview(this string contentType)
-            => IsImageContentType(contentType) ||
-               IsTextContentType(contentType);
+            => IsTextContentType(contentType);
 
     }
 }
