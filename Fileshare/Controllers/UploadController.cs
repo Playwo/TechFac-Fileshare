@@ -121,6 +121,8 @@ namespace Fileshare.Controllers
                 fileName = DataService.GetNextFileName(Request.ContentType);
             }
 
+            fileName ??= fileName = DataService.GetNextFileName(Request.ContentType);
+
             var userId = Guid.Parse(User.FindFirstValue("UserId"));
             var upload = new Upload(userId, fileName, Request.ContentType);
 
