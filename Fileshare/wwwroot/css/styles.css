@@ -5,27 +5,31 @@
 
 .mainarea {
     position: fixed;
-    width: 100%;
     top: 5vw;
+    width: 100%;
     height: 100%;
     background-color: darkslategray;
 }
 
 .main {
-    margin-top: 10px;
-    border-color: black;
-    border-width: 0.5vw;
-    border-radius: 20px;
-    border-style: dashed;
-    background-color: wheat;
+    position: absolute;
+    margin-top: 1vh;
     max-width: 90vw;
     min-width: 10vw;
     max-height: 90vh;
     min-height: 30vh;
+    border-color: black;
+    border-width: 0.5vw;
+    border-radius: 25px;
+    border-style: dashed;
+    background-color: wheat;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%)
 }
 
     .main * {
-        padding: 2.5% 2.5% 2.5% 2.5%;
+        margin: 2vh 2vw 2vh 2vw;
         max-width: 85vw;
         max-height: 85vh;
     }
@@ -41,7 +45,7 @@
     align-items: center;
     padding-left: 1rem;
     padding-right: 1rem;
-    box-sizing:border-box;
+    box-sizing: border-box;
 }
 
     .navbar img {
