@@ -19,11 +19,11 @@
     }
     else if (Model.Upload.ContentType.IsTextContentType())
     {
-        <a>@Model.DataString</a>
+        <span style="white-space: pre-wrap;">@Model.DataString</span>
     }
     else if (Model.Upload.ContentType.IsHtmlContentType())
     {
-        @Model.DataString
+        <span style="white-space: pre-wrap;">@Model.DataString</span>
     }
     else
     {
