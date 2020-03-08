@@ -34,8 +34,8 @@ namespace Fileshare
             //DB
             services.AddDbContext<UploaderContext>(options =>
             {
-                options.UseInMemoryDatabase("Local");
-                //options.UseNpgsql(Configuration.GetConnectionString());
+                //options.UseInMemoryDatabase("Local");
+                options.UseNpgsql(Configuration.GetConnectionString());
                 //options.EnableSensitiveDataLogging();
             },
             ServiceLifetime.Scoped, ServiceLifetime.Scoped);
