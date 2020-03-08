@@ -11,27 +11,26 @@
 </div>
 
 <div class="mainarea">
-    <center>
-        <main class="main">
-            @if (Model.Upload.ContentType.IsImageContentType())
-            {
-                <img src="@Model.GetRelativeDownloadUrl()" />
-            }
-            else if (Model.Upload.ContentType.IsTextContentType())
-            {
-                @Model.DataString
-            }
-            else if (Model.Upload.ContentType.IsHtmlContentType())
-            {
-                @Model.DataString
-            }
-            else
-            {
-                <strong style="font-size: 48px;">This file type does not support preview!</strong>
-            }
-        </main>
-    </center>
 </div>
+<main class="main">
+    @if (Model.Upload.ContentType.IsImageContentType())
+    {
+        <img src="@Model.GetRelativeDownloadUrl()" />
+    }
+    else if (Model.Upload.ContentType.IsTextContentType())
+    {
+        <a>@Model.DataString</a>
+    }
+    else if (Model.Upload.ContentType.IsHtmlContentType())
+    {
+        @Model.DataString
+    }
+    else
+    {
+        <strong style="font-size: 48px;">This file type does not support preview!</strong>
+    }
+</main>
+
 
 
 <div class="viewarea">
