@@ -10,26 +10,29 @@
     <strong>Type: @Model.Upload.ContentType</strong>
 </div>
 
-<main class="main">
+<div class="mainarea">
     <center>
-        @if (Model.Upload.ContentType.IsImageContentType())
-        {
-            <img src="@Model.GetRelativeDownloadUrl()" />
-        }
-        else if (Model.Upload.ContentType.IsTextContentType())
-        {
-            <a>@Model.DataString</a>
-        }
-        else if (Model.Upload.ContentType.IsHtmlContentType())
-        {
-            <ul>@Html.Raw(Model.DataString)</ul>
-        }
-        else
-        {
-            <strong style="font-size: 48px;">This file type does not support preview!</strong>
-        }
+        <main class="main">
+            @if (Model.Upload.ContentType.IsImageContentType())
+            {
+                <img src="@Model.GetRelativeDownloadUrl()" />
+            }
+            else if (Model.Upload.ContentType.IsTextContentType())
+            {
+                @Model.DataString
+            }
+            else if (Model.Upload.ContentType.IsHtmlContentType())
+            {
+                @Model.DataString
+            }
+            else
+            {
+                <strong style="font-size: 48px;">This file type does not support preview!</strong>
+            }
+        </main>
     </center>
-</main>
+</div>
+
 
 <div class="viewarea">
     <button onclick="location.href = '@Model.GetRelativeDownloadUrl(directDownload: false)';" class="viewbutton">
