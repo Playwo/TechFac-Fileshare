@@ -97,8 +97,8 @@
     }
 
     .dlbutton img {
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
         background-color: transparent;
     }
 
@@ -116,8 +116,8 @@
     border-color: rgb(201, 81, 1);
     border-width: 5px;
     color: black;
-    padding: 10px 16px;
     outline: none;
+    padding-left: 5px;
     background-color: deepskyblue;
 }
 
@@ -126,7 +126,7 @@
     }
 
     .viewbutton img {
-        width: 50px;
-        height: 50px;
         background-color: transparent;
+        height: 35px;
+        width: 55px;
     }
