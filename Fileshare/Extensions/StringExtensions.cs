@@ -51,16 +51,12 @@ namespace Fileshare.Extensions
             => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase,
                 "text/plain",
                 "application/json",
-                "text/xml");
-
-        public static bool IsHtmlContentType(this string contentType)
-            => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase,
+                "text/xml",
                 "text/html");
 
         public static bool DoesSupportPreview(this string contentType)
             => IsImageContentType(contentType) ||
-               IsTextContentType(contentType) ||
-               IsHtmlContentType(contentType);
+               IsTextContentType(contentType);
 
     }
 }

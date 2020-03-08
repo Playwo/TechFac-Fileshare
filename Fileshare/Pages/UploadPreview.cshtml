@@ -21,10 +21,6 @@
     {
         <span style="white-space: pre-wrap;">@Model.DataString</span>
     }
-    else if (Model.Upload.ContentType.IsHtmlContentType())
-    {
-        <span style="white-space: pre-wrap;">@Model.DataString</span>
-    }
     else
     {
         <strong style="font-size: 48px;">This file type does not support preview!</strong>
