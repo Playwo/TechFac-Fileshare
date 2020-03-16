@@ -49,11 +49,6 @@ namespace Fileshare
                 return Redirect(target);
             }
 
-            if (Upload.ContentType.DoesSupportPreview())
-            {
-                Data = await DataService.LoadUploadDataAsync(Upload);
-            }
-
             return Page();
         }
 
@@ -61,31 +56,32 @@ namespace Fileshare
         {
             target = null;
 
-            switch (PreviewOptions.Redirection)
+            if (PreviewOptions.RedirectAgents)
             {
-                case RedirectionMode.Never:
-                    return false;
-
-                case RedirectionMode.Agents:
-                    if (!Request.Headers.TryGetValue("User-Agent", out var agent))
-                    {
-                        return false;
-                    }
+                if (Request.Headers.TryGetValue("User-Agent", out var agent))
+                {
                     string userAgent = agent;
-                    target = GetRelativeDownloadUrl(directDownload: true);
-                    return userAgent.StartsWithAny(StringComparison.OrdinalIgnoreCase, "curl", "wget");
 
-                case RedirectionMode.AlwaysView:
+                    if (userAgent.StartsWithAny(StringComparison.OrdinalIgnoreCase, "wget", "curl"))
+                    {
+                        target = GetRelativeDownloadUrl(directDownload: true);
+                        return true;
+                    }
+                }
+            }
+
+            var category = Upload.ContentType.GetContentCategory();
+
+            if (category != ContentCategory.None)
+            {
+                if(PreviewOptions.RedirectCategories.HasFlag(category))
+                {
                     target = GetRelativeDownloadUrl(directDownload: false);
                     return true;
-
-                case RedirectionMode.AlwaysDownload:
-                    target = GetRelativeDownloadUrl(directDownload: true);
-                    return true;
-
-                default:
-                    return false;
+                }
             }
+
+            return false;
         }
 
 

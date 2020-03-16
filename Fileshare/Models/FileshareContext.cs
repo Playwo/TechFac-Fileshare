@@ -48,7 +48,9 @@ namespace Fileshare.Models
                 b.Property(x => x.UserId);
                 b.HasKey(x => x.UserId);
 
-                b.Property(x => x.Redirection);
+                b.Property(x => x.RedirectAgents);
+
+                b.Property(x => x.RedirectCategories);
             });
 
             modelBuilder.Entity<Upload>(b =>

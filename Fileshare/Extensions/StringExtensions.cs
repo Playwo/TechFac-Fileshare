@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Fileshare.Models;
 using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Fileshare.Extensions
@@ -31,31 +32,13 @@ namespace Fileshare.Extensions
         public static bool StartsWithAny(this string inputString, StringComparison comparisonType, params string[] values)
             => values.Any(x => inputString.StartsWith(x, comparisonType));
 
-        public static bool IsImageContentType(this string contentType)
-            => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase,
-                "image/gif",
-                "image/x-icon",
-                "image/jpeg",
-                "image/png",
-                "image/apng",
-                "image/bmp",
-                "image/tiff",
-                "image/svg+xml",
-                "image/webp");
+        public static bool FitsInContentCategory(this string contentType, ContentCategory category) 
+            => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase, category.GetContentTypes());
 
-        public static bool IsVideoContentType(this string contentType)
-            => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase,
-                "video/mp4");
-
-        public static bool IsTextContentType(this string contentType)
-            => contentType.ContainsAny(StringComparison.OrdinalIgnoreCase,
-                "text/plain",
-                "application/json",
-                "text/xml",
-                "text/html");
-
-        public static bool DoesSupportPreview(this string contentType)
-            => IsTextContentType(contentType);
-
+        public static ContentCategory GetContentCategory(this string contentType) 
+            => Enum.GetValues(typeof(ContentCategory))
+                .Cast<ContentCategory>()
+                .Where(x => FitsInContentCategory(contentType, x))
+                .FirstOrDefault();
     }
 }

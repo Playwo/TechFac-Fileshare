@@ -13,11 +13,11 @@
 <div class="mainarea">
 </div>
 <main class="main">
-    @if (Model.Upload.ContentType.IsImageContentType())
+    @if (Model.Upload.ContentType.FitsInContentCategory(Models.ContentCategory.Image))
     {
         <img src="@Model.GetRelativeDownloadUrl()" />
     }
-    else if (Model.Upload.ContentType.IsTextContentType())
+    else if (Model.Upload.ContentType.FitsInContentCategory(Models.ContentCategory.Text))
     {
         <span style="white-space: pre-wrap;">@Model.DataString</span>
     }
@@ -48,13 +48,13 @@
     <meta property="og:url" content="@Request.Path.ToUriComponent()" />
     <meta name="theme-color" content="#6bfc03">
 
-    @if (Model.Upload.ContentType.IsImageContentType())
+    @if (Model.Upload.ContentType.FitsInContentCategory(Models.ContentCategory.Image))
     {
         <meta property="og:image" content="@Model.GetRelativeDownloadUrl()" />
         <meta property="og:image:type" content="@Model.Upload.ContentType" />
         <meta property="og:image:height" content="250" />
     }
-    else if (Model.Upload.ContentType.IsVideoContentType())
+    else if (Model.Upload.ContentType.FitsInContentCategory(Models.ContentCategory.Video))
     {
         <meta property="og:video" content="@Model.GetRelativeDownloadUrl()" />
         <meta property="og:video:type" content="@Model.Upload.ContentType" />
