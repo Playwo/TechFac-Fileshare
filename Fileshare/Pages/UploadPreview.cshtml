@@ -45,6 +45,8 @@
 
     <meta property="og:site_name" content="Fileshare" />
     <meta property="og:description" content="Nice file innit, eh?" />
+    <meta property="og:url" content="@Request.Path.Value" />
+    <meta name="theme-color" content="#6bfc03">
 
     @if (Model.Upload.ContentType.IsImageContentType())
     {
