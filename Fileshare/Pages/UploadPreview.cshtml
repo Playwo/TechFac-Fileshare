@@ -19,7 +19,7 @@
     }
     else if (Model.Upload.ContentType.FitsInContentCategory(Models.ContentCategory.Text))
     {
-        <span style="white-space: pre-wrap;">@Model.DataString</span>
+        <span style="white-space: pre-wrap;">@await Model.LoadContentAsTextAsync()</span>
     }
     else
     {

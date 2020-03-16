@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Fileshare.Extensions;
@@ -19,9 +18,6 @@ namespace Fileshare
 
         public Upload Upload { get; private set; }
         public PreviewOptions PreviewOptions { get; private set; }
-
-        public byte[] Data { get; private set; }
-        public string DataString => Encoding.ASCII.GetString(Data);
 
         public UploadPreviewModel(FileshareContext dbContext, UploadDataService dataService)
         {
@@ -50,6 +46,12 @@ namespace Fileshare
             }
 
             return Page();
+        }
+
+        public async Task<string> LoadContentAsTextAsync()
+        {
+            var data = await DataService.LoadUploadDataAsync(Upload);
+            return Encoding.ASCII.GetString(data);
         }
 
         private bool TryGetRedirectionTarget(out string target)
