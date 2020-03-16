@@ -50,6 +50,7 @@
     {
         <meta property="og:image" content="@Model.GetRelativeDownloadUrl()" />
         <meta property="og:image:type" content="@Model.Upload.ContentType" />
+        <meta property="og:image:height" content="250" />
     }
     else if (Model.Upload.ContentType.IsVideoContentType())
     {
