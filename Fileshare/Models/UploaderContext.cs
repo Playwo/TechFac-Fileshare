@@ -31,6 +31,8 @@ namespace Fileshare.Models
 
                 b.Property(x => x.CreatedAt);
 
+                b.Property(x => x.Balance);
+
                 b.HasMany(x => x.Uploads)
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);

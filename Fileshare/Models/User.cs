@@ -14,6 +14,7 @@ namespace Fileshare.Models
         public string PasswordHash { get; private set; }
         public string Token { get; private set; }
         public DateTimeOffset CreatedAt { get; private set; }
+        public double Balance { get; set; }
 
         [JsonIgnore]
         public virtual List<Upload> Uploads { get; protected set; } //Nav Property
@@ -25,6 +26,8 @@ namespace Fileshare.Models
             PasswordHash = password.GetHashString();
             Token = token;
             CreatedAt = DateTimeOffset.UtcNow;
+
+            Balance = 5;
         }
 
         protected User()
