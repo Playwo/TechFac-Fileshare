@@ -40,7 +40,7 @@ namespace Fileshare.Models
 
                 b.HasOne(x => x.PreviewOptions)
                 .WithOne(x => x.User)
-                .HasForeignKey<PreviewOptions>(x => x.UserId)
+                .HasForeignKey<PreviewOptions>(x => x.UserId);
             });
 
             modelBuilder.Entity<PreviewOptions>(b =>

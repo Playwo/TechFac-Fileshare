@@ -41,9 +41,10 @@ namespace Fileshare.Controllers
 
             string token = Random.NextString(20);
             var user = new User(username, password, token);
-            var previewOptions = new PreviewOptions();
+            var previewOptions = new PreviewOptions(user.Id);
 
             DbContext.Add(user);
+            DbContext.Add(previewOptions);
             await DbContext.SaveChangesAsync();
 
             Logger.LogInformation($"Someone created a user: {username} [{user.Id}]");
