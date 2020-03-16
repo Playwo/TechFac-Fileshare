@@ -5,6 +5,7 @@ namespace Fileshare.Models
     public class FileshareContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<PreviewOptions> PreviewOptions { get; set; }
         public DbSet<Upload> Uploads { get; set; }
 
         public FileshareContext(DbContextOptions options)
@@ -36,6 +37,18 @@ namespace Fileshare.Models
                 b.HasMany(x => x.Uploads)
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);
+
+                b.HasOne(x => x.PreviewOptions)
+                .WithOne(x => x.User)
+                .HasForeignKey<PreviewOptions>(x => x.UserId)
+            });
+
+            modelBuilder.Entity<PreviewOptions>(b =>
+            {
+                b.Property(x => x.UserId);
+                b.HasKey(x => x.UserId);
+
+                b.Property(x => x.Redirection);
             });
 
             modelBuilder.Entity<Upload>(b =>

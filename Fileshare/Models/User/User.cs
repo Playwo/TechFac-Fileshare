@@ -18,6 +18,8 @@ namespace Fileshare.Models
 
         [JsonIgnore]
         public virtual List<Upload> Uploads { get; protected set; } //Nav Property
+        [JsonIgnore]
+        public virtual PreviewOptions PreviewOptions { get; protected set; } //Nav Property
 
         public User(string username, string password, string token)
         {

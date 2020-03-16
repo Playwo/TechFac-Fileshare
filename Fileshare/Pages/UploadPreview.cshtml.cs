@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Fileshare.Extensions;
@@ -17,6 +18,8 @@ namespace Fileshare
         private readonly UploadDataService DataService;
 
         public Upload Upload { get; private set; }
+        public PreviewOptions PreviewOptions { get; private set; }
+
         public byte[] Data { get; private set; }
         public string DataString => Encoding.ASCII.GetString(Data);
 
@@ -28,7 +31,9 @@ namespace Fileshare
 
         public async Task<ActionResult> OnGetAsync(string path)
         {
-            Upload = await DbContext.Uploads.Where(x => x.Id.ToString() == path || x.Filename == path)
+            Upload = await DbContext.Uploads.Include(x => x.User)
+                                            .ThenInclude(x => x.PreviewOptions)
+                                            .Where(x => x.Id.ToString() == path || x.Filename == path)
                                             .FirstOrDefaultAsync();
 
             if (Upload == null)
@@ -36,9 +41,12 @@ namespace Fileshare
                 return NotFound();
             }
 
-            if (NeedsRedirect())
+            PreviewOptions = DbContext.PreviewOptions.Where(x => x.UserId == Upload.UserId)
+                                                     .First();
+
+            if (TryGetRedirectionTarget(out string target))
             {
-                return Redirect(GetRelativeDownloadUrl(directDownload: true));
+                return Redirect(target);
             }
 
             if (Upload.ContentType.DoesSupportPreview())
@@ -49,16 +57,37 @@ namespace Fileshare
             return Page();
         }
 
-        private bool NeedsRedirect()
+        private bool TryGetRedirectionTarget(out string target)
         {
-            if (!Request.Headers.TryGetValue("User-Agent", out var agent))
-            {
-                return false;
-            }
-            string userAgent = agent;
+            target = null;
 
-            return userAgent.StartsWithAny(StringComparison.OrdinalIgnoreCase, "curl", "wget");
+            switch (PreviewOptions.Redirection)
+            {
+                case RedirectionMode.Never:
+                    return false;
+
+                case RedirectionMode.Agents:
+                    if (!Request.Headers.TryGetValue("User-Agent", out var agent))
+                    {
+                        return false;
+                    }
+                    string userAgent = agent;
+                    target = GetRelativeDownloadUrl(directDownload: true);
+                    return userAgent.StartsWithAny(StringComparison.OrdinalIgnoreCase, "curl", "wget");
+
+                case RedirectionMode.AlwaysView:
+                    target = GetRelativeDownloadUrl(directDownload: false);
+                    return true;
+
+                case RedirectionMode.AlwaysDownload:
+                    target = GetRelativeDownloadUrl(directDownload: true);
+                    return true;
+
+                default:
+                    return false;
+            }
         }
+
 
         public string GetRelativeDownloadUrl(bool directDownload = false)
         {

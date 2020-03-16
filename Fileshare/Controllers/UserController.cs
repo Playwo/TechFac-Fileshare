@@ -41,6 +41,7 @@ namespace Fileshare.Controllers
 
             string token = Random.NextString(20);
             var user = new User(username, password, token);
+            var previewOptions = new PreviewOptions();
 
             DbContext.Add(user);
             await DbContext.SaveChangesAsync();
