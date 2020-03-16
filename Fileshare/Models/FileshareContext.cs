@@ -2,12 +2,12 @@
 
 namespace Fileshare.Models
 {
-    public class UploaderContext : DbContext
+    public class FileshareContext : DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Upload> Uploads { get; set; }
 
-        public UploaderContext(DbContextOptions options)
+        public FileshareContext(DbContextOptions options)
             : base(options)
         {
         }

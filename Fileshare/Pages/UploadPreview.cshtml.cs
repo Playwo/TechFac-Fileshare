@@ -13,14 +13,14 @@ namespace Fileshare
 {
     public class UploadPreviewModel : PageModel
     {
-        private readonly UploaderContext DbContext;
+        private readonly FileshareContext DbContext;
         private readonly UploadDataService DataService;
 
         public Upload Upload { get; private set; }
         public byte[] Data { get; private set; }
         public string DataString => Encoding.ASCII.GetString(Data);
 
-        public UploadPreviewModel(UploaderContext dbContext, UploadDataService dataService)
+        public UploadPreviewModel(FileshareContext dbContext, UploadDataService dataService)
         {
             DbContext = dbContext;
             DataService = dataService;

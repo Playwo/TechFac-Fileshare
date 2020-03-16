@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Fileshare.Migrations
 {
-    [DbContext(typeof(UploaderContext))]
+    [DbContext(typeof(FileshareContext))]
     [Migration("20200229123922_ContentType")]
     partial class ContentType
     {

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Fileshare.Migrations
 {
-    [DbContext(typeof(UploaderContext))]
+    [DbContext(typeof(FileshareContext))]
     [Migration("20200309092425_AddUserBalance")]
     partial class AddUserBalance
     {

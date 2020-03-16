@@ -9,7 +9,7 @@ using Fileshare.Models;
 
 namespace Fileshare.Migrations
 {
-    [DbContext(typeof(UploaderContext))]
+    [DbContext(typeof(FileshareContext))]
     [Migration("20200228222611_Initial")]
     partial class Initial
     {

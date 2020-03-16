@@ -15,11 +15,11 @@ namespace Fileshare.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UploaderContext DbContext;
+        private readonly FileshareContext DbContext;
         private readonly Random Random;
         private readonly ILogger Logger;
 
-        public UserController(UploaderContext dbContext, Random random, ILogger<UserController> logger)
+        public UserController(FileshareContext dbContext, Random random, ILogger<UserController> logger)
         {
             DbContext = dbContext;
             Random = random;
