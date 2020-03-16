@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fileshare.Models
 {
@@ -51,6 +53,16 @@ namespace Fileshare.Models
                 b.Property(x => x.RedirectAgents);
 
                 b.Property(x => x.RedirectCategories);
+
+                b.Property(x => x.BackgroundColor)
+                .HasConversion(
+                    x => x.ToArgb(),         //Store
+                    x => Color.FromArgb(x)); //Load
+
+                b.Property(x => x.BoxColor)
+                .HasConversion(
+                    x => x.ToArgb(),         //Store
+                    x => Color.FromArgb(x)); //Load
             });
 
             modelBuilder.Entity<Upload>(b =>

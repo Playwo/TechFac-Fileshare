@@ -10,9 +10,9 @@
     <strong>Type: @Model.Upload.ContentType</strong>
 </div>
 
-<div class="mainarea">
+<div class="mainarea" style="background-color:@System.Drawing.ColorTranslator.ToHtml(Model.PreviewOptions.BackgroundColor)">
 </div>
-<main class="main">
+<main class="main" style="background-color:@System.Drawing.ColorTranslator.ToHtml(Model.PreviewOptions.BoxColor)">
     @if (Model.Upload.ContentType.FitsInContentCategory(Models.ContentCategory.Image))
     {
         <img src="@Model.GetRelativeDownloadUrl()" />
