@@ -89,7 +89,7 @@ namespace Fileshare
 
         public string GetRelativeDownloadUrl(bool directDownload = false)
         {
-            string url = $"/upload/data/get/{Upload.Id}";
+            string url = $"/upload/data/find/{Upload.Filename}";
 
             if (directDownload)
             {
