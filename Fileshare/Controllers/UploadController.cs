@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -155,13 +156,16 @@ namespace Fileshare.Controllers
                 }
             }
 
-            string checksum = Request.Body.GenerateChecksum();
+            var content = new MemoryStream();
+            await Request.Body.CopyToAsync(content);
+
+            string checksum = content.GenerateChecksum();
             var localFile = await DbContext.LocalFiles.Where(x => x.Checksum == checksum)
                                                       .FirstOrDefaultAsync();
 
             if (localFile == null)
             {
-                localFile = await DataService.StoreUploadDataAsync(Request.Body);
+                localFile = await DataService.StoreUploadDataAsync(content);
                 DbContext.Add(localFile);
             }
 
