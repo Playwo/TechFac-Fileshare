@@ -11,6 +11,7 @@ namespace Fileshare.Extensions
 
         public static string GenerateChecksum(this Stream stream, HashAlgorithm hashAlgorithm)
         {
+            stream.Position = 0;
             byte[] hash = hashAlgorithm.ComputeHash(stream);
             stream.Position = 0;
 
