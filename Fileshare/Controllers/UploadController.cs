@@ -2,12 +2,14 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Fileshare.Extensions;
 using Fileshare.Models;
 using Fileshare.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
+using MimeTypes;
 
 namespace Fileshare.Controllers
 {
@@ -43,7 +45,7 @@ namespace Fileshare.Controllers
         [HttpGet("info/find/{fileName}")]
         public async Task<ActionResult<Upload>> FindUploadAsync([FromRoute]string fileName)
         {
-            var upload = await DbContext.Uploads.Where(x => x.Filename == fileName)
+            var upload = await DbContext.Uploads.Where(x => x.Name == fileName)
                                                 .FirstOrDefaultAsync();
 
             return upload == null
@@ -56,7 +58,8 @@ namespace Fileshare.Controllers
         [HttpGet("data/get/{uploadId}/{dl?}")]
         public async Task<ActionResult> GetUploadDataAsync([FromRoute]Guid uploadId, [FromRoute] int dl = 0)
         {
-            var upload = await DbContext.Uploads.Where(x => x.Id == uploadId)
+            var upload = await DbContext.Uploads.Include(x => x.LocalFile)
+                                                .Where(x => x.Id == uploadId)
                                                 .FirstOrDefaultAsync();
 
             if (upload == null)
@@ -66,7 +69,7 @@ namespace Fileshare.Controllers
 
             AddContentDispositionHeader(upload, dl == 1);
 
-            byte[] uploadData = await DataService.LoadUploadDataAsync(upload);
+            byte[] uploadData = await DataService.LoadUploadDataAsync(upload.LocalFile);
             return File(uploadData, upload.ContentType);
         }
 
@@ -74,7 +77,8 @@ namespace Fileshare.Controllers
         [HttpGet("data/find/{fileName}/{dl?}")]
         public async Task<ActionResult> FindUploadDataAsync([FromRoute]string fileName, [FromRoute] int dl = 0)
         {
-            var upload = await DbContext.Uploads.Where(x => x.Filename == fileName)
+            var upload = await DbContext.Uploads.Include(x => x.LocalFile)
+                                                .Where(x => x.Name == fileName)
                                                 .FirstOrDefaultAsync();
 
             if (upload == null)
@@ -84,7 +88,7 @@ namespace Fileshare.Controllers
 
             AddContentDispositionHeader(upload, dl == 1);
 
-            byte[] uploadData = await DataService.LoadUploadDataAsync(upload);
+            byte[] uploadData = await DataService.LoadUploadDataAsync(upload.LocalFile);
             return File(uploadData, upload.ContentType);
         }
 
@@ -96,7 +100,7 @@ namespace Fileshare.Controllers
 
             var cd = new ContentDispositionHeaderValue(type)
             {
-                FileName = upload.Filename,
+                FileName = upload.Name,
                 CreationDate = upload.CreatedAt,
             };
             Response.Headers.Add(HeaderNames.ContentDisposition, cd.ToString());
@@ -107,33 +111,95 @@ namespace Fileshare.Controllers
         [HttpPost("send")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [RequestSizeLimit(50 * 1024 * 1024)]
-        public async Task<ActionResult<Upload>> ReceiveUploadAsync([FromHeader]string fileName = null, [FromHeader]bool generateName = false)
+        public async Task<ActionResult<Upload>> ReceiveUploadAsync([FromHeader]string filename = null, [FromHeader]bool generateName = false)
         {
-            if (fileName != null)
+            if (string.IsNullOrWhiteSpace(filename) && string.IsNullOrWhiteSpace(Request.ContentType))
             {
-                bool nameUsed = await DbContext.Uploads.AnyAsync(x => x.Filename == fileName);
-
-                if (nameUsed && !generateName)
-                {
-                    return Conflict("The fileName is already being used!");
-                }
-
-                fileName = DataService.GetNextFileName(Request.ContentType);
+                return BadRequest();
             }
 
-            fileName ??= fileName = DataService.GetNextFileName(Request.ContentType);
+            string extension = null;
+            string name = null;
+
+            if (string.IsNullOrWhiteSpace(filename))
+            {
+                if (!TryGetExtension(Request.ContentType, out extension))
+                {
+                    return BadRequest();
+                }
+
+                name = DataService.GetNextFileName();
+            }
+            else
+            {
+                if (!TryGetContentType(filename, out string ctype, out name, out extension))
+                {
+                    return BadRequest();
+                }
+
+                if (string.IsNullOrWhiteSpace(Request.ContentType))
+                {
+                    Request.ContentType = ctype;
+                }
+
+                bool nameUsed = await DbContext.Uploads.AnyAsync(x => x.Name == name);
+
+                if (nameUsed)
+                {
+                    if (!generateName)
+                    {
+                        return Conflict("The fileName is already being used!");
+                    }
+
+                    name = DataService.GetNextFileName();
+                }
+            }
+
+            string checksum = Request.Body.GenerateChecksum();
+            var localFile = await DbContext.LocalFiles.Where(x => x.Checksum == checksum)
+                                                      .FirstOrDefaultAsync();
+
+            if (localFile == null)
+            {
+                localFile = await DataService.StoreUploadDataAsync(Request.Body);
+                DbContext.Add(localFile);
+            }
 
             var userId = Guid.Parse(User.FindFirstValue("UserId"));
-            var upload = new Upload(userId, fileName, Request.ContentType);
+            var upload = new Upload(userId, localFile.Id, name, extension, Request.ContentType);
 
-            await DataService.StoreUploadDataAsync(upload, Request.Body);
             DbContext.Add(upload);
+
             await DbContext.SaveChangesAsync();
 
             WebhookService.QueueUpload(upload);
 
             return upload;
         }
+        private bool TryGetContentType(string filename, out string contentType, out string name, out string extension)
+        {
+            string[] parts = filename.Split('.');
+
+            if (parts.Length < 2)
+            {
+                contentType = null;
+                extension = null;
+                name = null;
+                return false;
+            }
+
+            name = string.Concat(parts.Take(parts.Length - 1));
+            extension = parts.Last();
+            contentType = MimeTypeMap.GetMimeType(extension);
+
+            return true;
+        }
+        private bool TryGetExtension(string contentType, out string extension)
+        {
+            extension = MimeTypeMap.GetExtension(contentType, false).Replace(".", "");
+            return string.IsNullOrWhiteSpace(extension);
+        }
+
         #endregion
         #region DeleteUpload
         [HttpDelete("deleteId")]
@@ -148,8 +214,6 @@ namespace Fileshare.Controllers
                 return NotFound("Invalid uploadId");
             }
 
-            DataService.DeleteUploadData(upload);
-
             DbContext.Uploads.Remove(upload);
             await DbContext.SaveChangesAsync();
 
@@ -160,15 +224,13 @@ namespace Fileshare.Controllers
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> DeleteUploadByIdAsync([FromForm]string fileName)
         {
-            var upload = await DbContext.Uploads.Where(x => x.Filename == fileName)
+            var upload = await DbContext.Uploads.Where(x => x.Name == fileName)
                                     .FirstOrDefaultAsync();
 
             if (upload == null)
             {
                 return NotFound("Invalid fileName");
             }
-
-            DataService.DeleteUploadData(upload);
 
             DbContext.Uploads.Remove(upload);
             await DbContext.SaveChangesAsync();

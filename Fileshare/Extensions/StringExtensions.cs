@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Fileshare.Extensions
 {
-    public static partial class Extensions
+    public static partial class Extension
     {
         public static byte[] GetHash(this string inputString)
         {

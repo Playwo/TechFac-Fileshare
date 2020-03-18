@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Fileshare.Extensions
 {
-    public static partial class Extensions
+    public static partial class Extension
     {
         private readonly static char[] Letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToCharArray();
 

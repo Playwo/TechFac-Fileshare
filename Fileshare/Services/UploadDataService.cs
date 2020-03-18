@@ -1,5 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Security.Cryptography;
+using System.Security.Policy;
+using System.Text;
 using System.Threading.Tasks;
 using Fileshare.Extensions;
 using Fileshare.Models;
@@ -28,29 +32,36 @@ namespace Fileshare.Services
             return base.RunAsync();
         }
 
-        public async Task StoreUploadDataAsync(Upload upload, Stream content)
+        public async Task<LocalFile> StoreUploadDataAsync(Stream content)
         {
-            string path = GetFilePath(upload);
+            string checksum = content.GenerateChecksum();
+            var localFile = new LocalFile(checksum);
+
+            content.Position = 0;
+
+            string path = GetFilePath(localFile);
             using var fileStream = File.Create(path);
             await content.CopyToAsync(fileStream);
             await fileStream.FlushAsync();
+
+            return localFile;
         }
-        public async Task<byte[]> LoadUploadDataAsync(Upload upload)
+        public async Task<byte[]> LoadUploadDataAsync(LocalFile file)
         {
-            string path = GetFilePath(upload);
+            string path = GetFilePath(file);
             return await File.ReadAllBytesAsync(path);
         }
-        public void DeleteUploadData(Upload upload)
+        public void DeleteUploadData(LocalFile file)
         {
-            string path = GetFilePath(upload);
+            string path = GetFilePath(file);
             if (File.Exists(path))
             {
                 File.Delete(path);
             }
         }
 
-        public string GetFilePath(Upload upload)
-            => Path.Combine(GetBasePath(), $"{upload.Id}.data");
+        public string GetFilePath(LocalFile file)
+            => Path.Combine(GetBasePath(), $"{file.Id}.data");
 
         public string GetBasePath()
             => Path.IsPathRooted(Configuration.GetStorageDir())
@@ -58,15 +69,8 @@ namespace Fileshare.Services
                 : Path.Combine(Environment.CurrentDirectory, Configuration.GetStorageDir());
 
         //ToDo: Add shorter filename
-        public string GetNextFileName(string contentType)
+        public string GetNextFileName()
         {
-            string extension = MimeTypeMap.GetExtension(contentType, false);
-
-            if (string.IsNullOrWhiteSpace(extension))
-            {
-                extension = ".other";
-            }
-
             lock (IdGeneratorLock)
             {
                 var time = DateTimeOffset.UtcNow;
@@ -78,7 +82,7 @@ namespace Fileshare.Services
 
                 LastIdTime = time;
 
-                return $"{time.Year}{time.Month}{time.Day}{time.Hour}{time.Minute}{time.Second}{time.Millisecond}{extension}";
+                return $"{time.Year}{time.Month}{time.Day}{time.Hour}{time.Minute}{time.Second}{time.Millisecond}";
             }
         }
     }

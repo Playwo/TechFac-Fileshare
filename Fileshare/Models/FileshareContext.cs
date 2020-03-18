@@ -8,6 +8,7 @@ namespace Fileshare.Models
     {
         public DbSet<User> Users { get; set; }
         public DbSet<PreviewOptions> PreviewOptions { get; set; }
+        public DbSet<LocalFile> LocalFiles { get; set; }
         public DbSet<Upload> Uploads { get; set; }
 
         public FileshareContext(DbContextOptions options)
@@ -65,6 +66,22 @@ namespace Fileshare.Models
                     x => Color.FromArgb(x)); //Load
             });
 
+            modelBuilder.Entity<LocalFile>(b =>
+            {
+                b.Property(x => x.Id);
+                b.HasKey(x => x.Id);
+
+                b.Property(x => x.Checksum);
+                b.HasIndex(x => x.Checksum)
+                .IsUnique();
+
+                b.Property(x => x.CreatedAt);
+
+                b.HasMany(x => x.Uploads)
+                .WithOne(x => x.LocalFile)
+                .HasForeignKey(x => x.FileId);
+            });
+
             modelBuilder.Entity<Upload>(b =>
             {
                 b.Property(x => x.Id);
@@ -73,9 +90,11 @@ namespace Fileshare.Models
                 b.Property(x => x.UserId);
                 b.HasIndex(x => x.UserId);
 
-                b.Property(x => x.Filename);
-                b.HasIndex(x => x.Filename)
+                b.Property(x => x.Name);
+                b.HasIndex(x => x.Name)
                 .IsUnique();
+
+                b.Ignore(x => x.Filename);
 
                 b.Property(x => x.ContentType);
 

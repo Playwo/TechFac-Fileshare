@@ -25,11 +25,12 @@ namespace Fileshare
             DataService = dataService;
         }
 
-        public async Task<ActionResult> OnGetAsync(string path)
+        public async Task<ActionResult> OnGetAsync(string name)
         {
-            Upload = await DbContext.Uploads.Include(x => x.User)
+            Upload = await DbContext.Uploads.Include(x => x.LocalFile)
+                                            .Include(x => x.User)
                                             .ThenInclude(x => x.PreviewOptions)
-                                            .Where(x => x.Id.ToString() == path || x.Filename == path)
+                                            .Where(x => x.Id.ToString() == name || x.Name == name)
                                             .FirstOrDefaultAsync();
 
             if (Upload == null)
@@ -40,17 +41,14 @@ namespace Fileshare
             PreviewOptions = DbContext.PreviewOptions.Where(x => x.UserId == Upload.UserId)
                                                      .First();
 
-            if (TryGetRedirectionTarget(out string target))
-            {
-                return Redirect(target);
-            }
-
-            return Page();
+            return TryGetRedirectionTarget(out string target) 
+                ? Redirect(target) 
+                : (ActionResult) Page();
         }
 
         public async Task<string> LoadContentAsTextAsync()
         {
-            var data = await DataService.LoadUploadDataAsync(Upload);
+            byte[] data = await DataService.LoadUploadDataAsync(Upload.LocalFile);
             return Encoding.ASCII.GetString(data);
         }
 
@@ -89,7 +87,7 @@ namespace Fileshare
 
         public string GetRelativeDownloadUrl(bool directDownload = false)
         {
-            string url = $"/upload/data/find/{Upload.Filename}";
+            string url = $"/upload/data/find/{Upload.Name}";
 
             if (directDownload)
             {
