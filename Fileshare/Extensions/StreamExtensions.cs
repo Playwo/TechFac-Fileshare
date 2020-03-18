@@ -12,7 +12,7 @@ namespace Fileshare.Extensions
         public static string GenerateChecksum(this Stream stream, HashAlgorithm hashAlgorithm)
         {
             byte[] hash = hashAlgorithm.ComputeHash(stream);
-            string checksum = Encoding.UTF8.GetString(hash);
+            string checksum = Encoding.ASCII.GetString(hash);
 
             stream.Position = 0;
             return checksum;
