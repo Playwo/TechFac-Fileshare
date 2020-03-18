@@ -12,10 +12,15 @@ namespace Fileshare.Extensions
         public static string GenerateChecksum(this Stream stream, HashAlgorithm hashAlgorithm)
         {
             byte[] hash = hashAlgorithm.ComputeHash(stream);
-            string checksum = Encoding.ASCII.GetString(hash);
-
             stream.Position = 0;
-            return checksum;
+
+            var sb = new StringBuilder();
+            foreach (byte b in hash)
+            {
+                sb.Append(b.ToString("X2"));
+            }
+
+            return sb.ToString();
         }
     }
 }
