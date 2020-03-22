@@ -101,7 +101,7 @@ namespace Fileshare.Controllers
 
             var cd = new ContentDispositionHeaderValue(type)
             {
-                FileName = upload.Name,
+                FileName = $"{upload.Name}.{upload.Extension}",
                 CreationDate = upload.CreatedAt,
             };
             Response.Headers.Add(HeaderNames.ContentDisposition, cd.ToString());
