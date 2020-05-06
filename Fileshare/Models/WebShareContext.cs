@@ -145,6 +145,7 @@ namespace Fileshare.Models
                 b.Property(x => x.TargetId);
 
                 b.Property(x => x.CreatedAt);
+                b.Property(x => x.Name);
                 b.Property(x => x.UseCount);
 
                 b.ToTable("ShortUrls");

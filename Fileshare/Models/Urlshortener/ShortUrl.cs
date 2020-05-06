@@ -12,6 +12,7 @@ namespace Fileshare.Models
         public Guid TargetId { get; private set; }
 
         public DateTimeOffset CreatedAt { get; private set; }
+        public string Name { get; private set; }
         public int UseCount { get; set; }
         
         public virtual RedirectTarget Target { get; protected set; } //Nav Property
