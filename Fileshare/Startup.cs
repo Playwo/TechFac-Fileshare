@@ -32,7 +32,7 @@ namespace Fileshare
             services.AddSingleton<HttpClient>();
 
             //DB
-            services.AddDbContext<FileshareContext>(options =>
+            services.AddDbContext<WebShareContext>(options =>
             {
                 //options.UseInMemoryDatabase("Local");
                 options.UseNpgsql(Configuration.GetConnectionString());

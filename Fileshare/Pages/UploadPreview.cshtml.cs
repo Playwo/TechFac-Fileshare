@@ -13,13 +13,13 @@ namespace Fileshare
 {
     public class UploadPreviewModel : PageModel
     {
-        private readonly FileshareContext DbContext;
+        private readonly WebShareContext DbContext;
         private readonly UploadDataService DataService;
 
         public Upload Upload { get; private set; }
         public PreviewOptions PreviewOptions { get; private set; }
 
-        public UploadPreviewModel(FileshareContext dbContext, UploadDataService dataService)
+        public UploadPreviewModel(WebShareContext dbContext, UploadDataService dataService)
         {
             DbContext = dbContext;
             DataService = dataService;

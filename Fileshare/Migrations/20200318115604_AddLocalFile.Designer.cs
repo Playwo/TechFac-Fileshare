@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Fileshare.Migrations
 {
-    [DbContext(typeof(FileshareContext))]
+    [DbContext(typeof(WebShareContext))]
     [Migration("20200318115604_AddLocalFile")]
     partial class AddLocalFile
     {

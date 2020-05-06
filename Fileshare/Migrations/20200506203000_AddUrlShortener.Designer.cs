@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Fileshare.Migrations
 {
     [DbContext(typeof(WebShareContext))]
-    [Migration("20200316225851_ImprovePreviewOptions")]
-    partial class ImprovePreviewOptions
+    [Migration("20200506203000_AddUrlShortener")]
+    partial class AddUrlShortener
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,10 +21,36 @@ namespace Fileshare.Migrations
                 .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            modelBuilder.Entity("Fileshare.Models.LocalFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Checksum")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Checksum")
+                        .IsUnique();
+
+                    b.ToTable("LocalFiles");
+                });
+
             modelBuilder.Entity("Fileshare.Models.PreviewOptions", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("BackgroundColor")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("BoxColor")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("RedirectAgents")
                         .HasColumnType("boolean");
@@ -35,6 +61,53 @@ namespace Fileshare.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("PreviewOptions");
+                });
+
+            modelBuilder.Entity("Fileshare.Models.RedirectTarget", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TargetUrl")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TargetUrl")
+                        .IsUnique();
+
+                    b.ToTable("RedirectTargets");
+                });
+
+            modelBuilder.Entity("Fileshare.Models.ShortUrl", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("UseCount")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TargetId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ShortUrls");
                 });
 
             modelBuilder.Entity("Fileshare.Models.Upload", b =>
@@ -49,7 +122,13 @@ namespace Fileshare.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Filename")
+                    b.Property<string>("Extension")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("FileId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.Property<Guid>("UserId")
@@ -57,7 +136,9 @@ namespace Fileshare.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Filename")
+                    b.HasIndex("FileId");
+
+                    b.HasIndex("Name")
                         .IsUnique();
 
                     b.HasIndex("UserId");
@@ -106,8 +187,29 @@ namespace Fileshare.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Fileshare.Models.ShortUrl", b =>
+                {
+                    b.HasOne("Fileshare.Models.RedirectTarget", "Target")
+                        .WithMany("ShortUrls")
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Fileshare.Models.User", "User")
+                        .WithMany("ShortUrls")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Fileshare.Models.Upload", b =>
                 {
+                    b.HasOne("Fileshare.Models.LocalFile", "LocalFile")
+                        .WithMany("Uploads")
+                        .HasForeignKey("FileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Fileshare.Models.User", "User")
                         .WithMany("Uploads")
                         .HasForeignKey("UserId")

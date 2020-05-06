@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Fileshare.Migrations
 {
-    [DbContext(typeof(FileshareContext))]
+    [DbContext(typeof(WebShareContext))]
     partial class UploaderContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -59,6 +59,53 @@ namespace Fileshare.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("PreviewOptions");
+                });
+
+            modelBuilder.Entity("Fileshare.Models.RedirectTarget", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TargetUrl")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TargetUrl")
+                        .IsUnique();
+
+                    b.ToTable("RedirectTargets");
+                });
+
+            modelBuilder.Entity("Fileshare.Models.ShortUrl", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("UseCount")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TargetId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ShortUrls");
                 });
 
             modelBuilder.Entity("Fileshare.Models.Upload", b =>
@@ -134,6 +181,21 @@ namespace Fileshare.Migrations
                     b.HasOne("Fileshare.Models.User", "User")
                         .WithOne("PreviewOptions")
                         .HasForeignKey("Fileshare.Models.PreviewOptions", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Fileshare.Models.ShortUrl", b =>
+                {
+                    b.HasOne("Fileshare.Models.RedirectTarget", "Target")
+                        .WithMany("ShortUrls")
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Fileshare.Models.User", "User")
+                        .WithMany("ShortUrls")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -13,10 +13,10 @@ namespace Fileshare.Authentication
 {
     public class BearerAuthHandler : AuthenticationHandler<BearerAuthOptions>
     {
-        public FileshareContext DbContext;
+        public WebShareContext DbContext;
 
         public BearerAuthHandler(IOptionsMonitor<BearerAuthOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock,
-                                 FileshareContext dbContext)
+                                 WebShareContext dbContext)
             : base(options, logger, encoder, clock)
         {
             DbContext = dbContext;

@@ -18,11 +18,11 @@ namespace Fileshare.Controllers
     [ApiController]
     public class UploadController : ControllerBase
     {
-        private readonly FileshareContext DbContext;
+        private readonly WebShareContext DbContext;
         private readonly UploadDataService DataService;
         private readonly WebhookService WebhookService;
 
-        public UploadController(FileshareContext dbContext, UploadDataService dataService, WebhookService webhookService)
+        public UploadController(WebShareContext dbContext, UploadDataService dataService, WebhookService webhookService)
         {
             DbContext = dbContext;
             DataService = dataService;

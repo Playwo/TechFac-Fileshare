@@ -4,14 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fileshare.Models
 {
-    public class FileshareContext : DbContext
+    public class WebShareContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+
         public DbSet<PreviewOptions> PreviewOptions { get; set; }
         public DbSet<LocalFile> LocalFiles { get; set; }
         public DbSet<Upload> Uploads { get; set; }
 
-        public FileshareContext(DbContextOptions options)
+        public DbSet<ShortUrl> ShortUrls {get; set;}
+        public DbSet<RedirectTarget> RedirectTargets { get; set; }
+
+        public WebShareContext(DbContextOptions options)
             : base(options)
         {
         }
@@ -44,6 +48,12 @@ namespace Fileshare.Models
                 b.HasOne(x => x.PreviewOptions)
                 .WithOne(x => x.User)
                 .HasForeignKey<PreviewOptions>(x => x.UserId);
+
+                b.HasMany(x => x.ShortUrls)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+
+                b.ToTable("Users");
             });
 
             modelBuilder.Entity<PreviewOptions>(b =>
@@ -64,6 +74,8 @@ namespace Fileshare.Models
                 .HasConversion(
                     x => x.ToArgb(),         //Store
                     x => Color.FromArgb(x)); //Load
+
+                b.ToTable("PreviewOptions");
             });
 
             modelBuilder.Entity<LocalFile>(b =>
@@ -80,6 +92,8 @@ namespace Fileshare.Models
                 b.HasMany(x => x.Uploads)
                 .WithOne(x => x.LocalFile)
                 .HasForeignKey(x => x.FileId);
+
+                b.ToTable("LocalFiles");
             });
 
             modelBuilder.Entity<Upload>(b =>
@@ -99,6 +113,41 @@ namespace Fileshare.Models
                 b.Property(x => x.ContentType);
 
                 b.Property(x => x.CreatedAt);
+
+                b.ToTable("Uploads");
+            });
+
+            modelBuilder.Entity<RedirectTarget>(b =>
+            {
+                b.Property(x => x.Id);
+                b.HasKey(x => x.Id);
+
+                b.Property(x => x.TargetUrl);
+                b.HasIndex(x => x.TargetUrl)
+                .IsUnique();
+
+                b.Property(x => x.CreatedAt);
+
+                b.HasMany(x => x.ShortUrls)
+                .WithOne(x => x.Target)
+                .HasForeignKey(x => x.TargetId);
+
+                b.ToTable("RedirectTargets");
+            });
+
+            modelBuilder.Entity<ShortUrl>(b =>
+            {
+                b.Property(x => x.Id);
+                b.HasKey(x => x.Id);
+
+                b.Property(x => x.UserId);
+
+                b.Property(x => x.TargetId);
+
+                b.Property(x => x.CreatedAt);
+                b.Property(x => x.UseCount);
+
+                b.ToTable("ShortUrls");
             });
         }
     }

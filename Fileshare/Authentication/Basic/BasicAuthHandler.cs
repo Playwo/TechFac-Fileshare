@@ -16,10 +16,10 @@ namespace Fileshare.Authentication
 {
     public class BasicAuthHandler : AuthenticationHandler<BasicAuthOptions>
     {
-        private readonly FileshareContext DbContext;
+        private readonly WebShareContext DbContext;
 
         public BasicAuthHandler(IOptionsMonitor<BasicAuthOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock,
-            FileshareContext dbContext)
+            WebShareContext dbContext)
             : base(options, logger, encoder, clock)
         {
             DbContext = dbContext;
