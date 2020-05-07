@@ -16,12 +16,12 @@ namespace Fileshare.Controllers
     public class ShortUrlController : ControllerBase
     {
         private readonly WebShareContext DbContext;
-        private readonly UploadDataService DataService;
+        private readonly GeneratorService GeneratorService;
 
-        public ShortUrlController(WebShareContext dbContext, UploadDataService dataService)
+        public ShortUrlController(WebShareContext dbContext, GeneratorService generatorService)
         {
             DbContext = dbContext;
-            DataService = dataService;
+            GeneratorService = generatorService;
         }
 
         [HttpPost("shorten")]
@@ -35,7 +35,7 @@ namespace Fileshare.Controllers
 
             if (string.IsNullOrWhiteSpace(name))
             {
-                name = DataService.GetNextFileName();
+                name = GeneratorService.GenerateNextName();
             }
             else
             {
@@ -48,7 +48,7 @@ namespace Fileshare.Controllers
                         return Conflict("this name is already being used");
                     }
 
-                    name = DataService.GetNextFileName();
+                    name = GeneratorService.GenerateNextName();
                 }
             }
 

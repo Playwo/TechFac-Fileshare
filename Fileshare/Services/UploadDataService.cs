@@ -15,15 +15,10 @@ namespace Fileshare.Services
     public class UploadDataService : Service
     {
         private readonly IConfiguration Configuration;
-        private readonly object IdGeneratorLock;
-        private DateTimeOffset LastIdTime;
 
         public UploadDataService(IConfiguration configuration)
         {
             Configuration = configuration;
-
-            IdGeneratorLock = new object();
-            LastIdTime = DateTimeOffset.UtcNow;
         }
 
         public override ValueTask RunAsync()
@@ -68,22 +63,5 @@ namespace Fileshare.Services
                 ? Configuration.GetStorageDir()
                 : Path.Combine(Environment.CurrentDirectory, Configuration.GetStorageDir());
 
-        //ToDo: Add shorter filename
-        public string GetNextFileName()
-        {
-            lock (IdGeneratorLock)
-            {
-                var time = DateTimeOffset.UtcNow;
-
-                if ((time - LastIdTime).TotalMilliseconds < 2)
-                {
-                    time = LastIdTime.AddMilliseconds(2);
-                }
-
-                LastIdTime = time;
-
-                return $"{time.Year}{time.Month}{time.Day}{time.Hour}{time.Minute}{time.Second}{time.Millisecond}";
-            }
-        }
     }
 }

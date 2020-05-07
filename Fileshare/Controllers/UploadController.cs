@@ -21,12 +21,14 @@ namespace Fileshare.Controllers
         private readonly WebShareContext DbContext;
         private readonly UploadDataService DataService;
         private readonly WebhookService WebhookService;
+        private readonly GeneratorService GeneratorService;
 
-        public UploadController(WebShareContext dbContext, UploadDataService dataService, WebhookService webhookService)
+        public UploadController(WebShareContext dbContext, UploadDataService dataService, WebhookService webhookService, GeneratorService generatorService)
         {
             DbContext = dbContext;
             DataService = dataService;
             WebhookService = webhookService;
+            GeneratorService = generatorService;
         }
 
         #region GetUpload
@@ -129,7 +131,7 @@ namespace Fileshare.Controllers
                     return BadRequest();
                 }
 
-                name = DataService.GetNextFileName();
+                name = GeneratorService.GenerateNextName();
             }
             else
             {
@@ -152,7 +154,7 @@ namespace Fileshare.Controllers
                         return Conflict("The fileName is already being used!");
                     }
 
-                    name = DataService.GetNextFileName();
+                    name = GeneratorService.GenerateNextName();
                 }
             }
 
