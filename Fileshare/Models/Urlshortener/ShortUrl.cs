@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Fileshare.Models
@@ -15,14 +16,17 @@ namespace Fileshare.Models
         public string Name { get; private set; }
         public int UseCount { get; set; }
         
+        [JsonIgnore]
         public virtual RedirectTarget Target { get; protected set; } //Nav Property
+        [JsonIgnore]
         public virtual User User { get; protected set; } //Nav Property
 
-        public ShortUrl(Guid userId, Guid targetId)
+        public ShortUrl(Guid userId, Guid targetId, string name)
         {
             Id = Guid.NewGuid();
             UserId = userId;
             TargetId = targetId;
+            Name = name;
 
             CreatedAt = DateTimeOffset.UtcNow;
             UseCount = 0;
