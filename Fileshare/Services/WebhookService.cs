@@ -8,16 +8,18 @@ using Fileshare.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using YamlDotNet.Core.Tokens;
 
 namespace Fileshare.Services
 {
     public class WebhookService : Service
     {
-        private readonly Uri WebhookUrl;
-        private readonly bool Enabled;
-        private readonly BlockingCollection<Upload> WebhookUploadQueue;
         private readonly HttpClient Client;
         private readonly ILogger Logger;
+
+        private readonly Uri WebhookUrl;
+        private readonly bool Enabled;
+        private readonly BlockingCollection<string> WebhookQueue;
 
         public WebhookService(IConfiguration configuration, HttpClient client, ILogger<WebhookService> logger)
         {
@@ -26,7 +28,7 @@ namespace Fileshare.Services
             if (Enabled)
             {
                 WebhookUrl = webhookUrl;
-                WebhookUploadQueue = new BlockingCollection<Upload>();
+                WebhookQueue = new BlockingCollection<string>();
                 Client = client;
                 Logger = logger;
             }
@@ -42,17 +44,27 @@ namespace Fileshare.Services
         {
             if (Enabled)
             {
-                WebhookUploadQueue.Add(upload);
+                string message = CreateUploadEmbed(upload);
+                WebhookQueue.Add(message);
             }
         }
 
+        public void QueueShortUrl(ShortUrl shortUrl)
+        {
+            if (Enabled)
+            {
+                string message = CreateShortUrlEmbed(shortUrl);
+                WebhookQueue.Add(message);
+            }
+        }
+
+
         private async Task SendWebHooksAsync()
         {
-            foreach (var upload in WebhookUploadQueue.GetConsumingEnumerable())
+            foreach (string message in WebhookQueue.GetConsumingEnumerable())
             {
                 var delay = Task.Delay(2500); //Prevent Spam
-                string content = CreateDiscordEmbed(upload);
-                var result = await Client.PostAsync(WebhookUrl, new StringContent(content, Encoding.UTF8, "application/json"));
+                var result = await Client.PostAsync(WebhookUrl, new StringContent(message, Encoding.UTF8, "application/json"));
 
                 if (!result.IsSuccessStatusCode)
                 {
@@ -63,30 +75,43 @@ namespace Fileshare.Services
             }
         }
 
-        private string CreateDiscordEmbed(Upload upload)
+        private string CreateUploadEmbed(Upload upload)
+            => CreateEmbed(upload.User.Username, "I've just uploaded a file!", fields: new[] { new Field("Type", upload.ContentType, true) });
+
+        private string CreateShortUrlEmbed(ShortUrl shortUrl) 
+            => CreateEmbed(shortUrl.User.Username, "I've just shortened an url!", shortUrl.Target.TargetUrl);
+
+        private string CreateEmbed(string username, string title, string description = "", params Field[] fields)
         {
             var content = new
             {
-                username = $"{upload.User.Username}",
+                username = username,
                 embeds = new[]
                 {
                     new
                     {
-                        title = "I've just uploaded a file!",
-                        fields = new[]
-                        {
-                            new
-                            {
-                                name = "Type",
-                                value = $"{upload.ContentType}",
-                                inline = true
-                            }
-                        }
-                    }
-                }
+                        title = title,
+                        description = description,
+                        fields = fields,
+                     }
+                  }
             };
 
-            return JsonConvert.SerializeObject(content);
+            return JsonConvert.SerializeObject(content).ToLower();
+        }
+
+        class Field
+        {
+            public readonly string Name;
+            public readonly string Value;
+            public readonly bool Inline;
+
+            public Field(string name, string value, bool inline)
+            {
+                Name = name;
+                Value = value;
+                Inline = inline;
+            }
         }
     }
 }

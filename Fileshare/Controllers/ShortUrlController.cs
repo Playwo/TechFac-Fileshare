@@ -17,11 +17,13 @@ namespace Fileshare.Controllers
     {
         private readonly WebShareContext DbContext;
         private readonly GeneratorService GeneratorService;
+        private readonly WebhookService WebhookService;
 
-        public ShortUrlController(WebShareContext dbContext, GeneratorService generatorService)
+        public ShortUrlController(WebShareContext dbContext, GeneratorService generatorService, WebhookService webhookService)
         {
             DbContext = dbContext;
             GeneratorService = generatorService;
+            WebhookService = webhookService;
         }
 
         [HttpPost("shorten")]
@@ -65,6 +67,8 @@ namespace Fileshare.Controllers
 
             DbContext.ShortUrls.Add(shortUrl);
             await DbContext.SaveChangesAsync();
+
+            WebhookService.QueueShortUrl(shortUrl);
 
             return Ok(shortUrl);
         }
