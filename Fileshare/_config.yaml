@@ -5,3 +5,4 @@ FileStoragePath: TempFolder
 ApiKey: YourAPIKey
 EnableWebhook: true
 WebhookUrl: https://discordapp.com/api/webhooks/
+ListenUrl: "http://localhost:1003"

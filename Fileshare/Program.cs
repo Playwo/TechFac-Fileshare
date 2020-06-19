@@ -1,35 +1,39 @@
 using System.IO;
+using System.Net;
+using System.Threading.Tasks;
+using Fileshare.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using YamlDotNet.Serialization;
 
 namespace Fileshare
 {
     public class Program
     {
-        public static void Main(string[] args) => CreateHostBuilder(args).Build().Run();
+        public static Task Main(string[] args)
+        {
+            string configPath = "config.yaml";
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.ConfigureKestrel(options =>
-                    {
-                        options.ListenLocalhost(7777);
-                    });
+            TryCreateConfig(configPath);
 
-                    webBuilder.UseStartup<Startup>();
-                })
-                .ConfigureAppConfiguration((context, config) =>
-                {
-                    string path = $"{context.HostingEnvironment.EnvironmentName}.config.yaml";
+            var config = new ConfigurationBuilder()
+                            .SetBasePath(Directory.GetCurrentDirectory())
+                            .AddYamlFile(configPath, false)
+                            .AddEnvironmentVariables()
+                            .Build();
 
-                    TryCreateConfig(path);
+            var host = new WebHostBuilder()
+                .UseConfiguration(config)
+                .UseUrls(config.GetListenUrl())
+                .UseKestrel()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseStartup<Startup>()
+                .Build();
 
-                    config.Sources.Clear();
-                    config.AddYamlFile(path);
-                });
+            return host.RunAsync();
+        }
 
         public static void TryCreateConfig(string path)
         {
@@ -41,7 +45,8 @@ namespace Fileshare
                     FileStoragePath = "TempFolder",
                     ApiKey = "YourAPIKey",
                     EnableWebhook = "false",
-                    WebhookUrl = ""
+                    WebhookUrl = "",
+                    ListenUrl = "http://localhost:1003"
                 });
 
                 File.WriteAllText(path, defaultConfig); ;

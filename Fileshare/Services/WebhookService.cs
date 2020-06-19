@@ -36,7 +36,11 @@ namespace Fileshare.Services
 
         public override ValueTask RunAsync()
         {
-            _ = Task.Run(() => SendWebHooksAsync());
+            if (Enabled)
+            {
+                _ = Task.Run(() => SendWebHooksAsync());
+            }
+
             return base.RunAsync();
         }
 

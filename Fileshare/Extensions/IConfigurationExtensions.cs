@@ -14,6 +14,9 @@ namespace Fileshare.Extensions
         public static string GetConnectionString(this IConfiguration configuration)
             => configuration.GetValue<string>("ConnectionString");
 
+        public static string GetListenUrl(this IConfiguration configuration)
+            => configuration.GetValue<string>("ListenUrl");
+
         public static bool TryGetWebhookUrl(this IConfiguration configuration, out Uri webHookUrl)
         {
             if (configuration.GetValue<bool>("EnableWebhook"))
